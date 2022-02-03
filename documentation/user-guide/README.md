@@ -65,7 +65,7 @@ As a PartChain user, you can access all information concerning parts and compone
 
 ### **Login** 
 
-<img src="./images/PC_Login.png" height="60%" width="60%">
+<img src="images/PC_Login.png" height="60%" width="60%">
 
 1. Open PartChain via the URL: # (recommended browser Google Chrome).
 1. Enter the user name and password. If the login data is correct, the dashboard of the PartChain UI opens. If the information are incorrect, as error message will be displayed.
@@ -188,13 +188,13 @@ To view a part's details, click on the part which details you want to view.
 
 Doing so, will open a sidebar with a summary of the details.
 
-<img src="images/PC_MyParts-open.png" height="60%" width="60%"/>
+<img src="images/PC_MyParts-Open.png" height="60%" width="60%"/>
 
 <br>
 
 Clicking on "See full details" on the sidebar, will link to the parts full details page
 
-<img src="images/PC_MyParts-details.png" height="60%" width="60%"/>
+<img src="images/PC_MyParts-Details.png" height="60%" width="60%"/>
 
 <br>
 <br>

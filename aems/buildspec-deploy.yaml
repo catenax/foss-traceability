@@ -1,0 +1,35 @@
+version: 0.2
+
+env:
+  variables:
+    ENVIRONMENT: dev
+
+phases:
+  install:
+    commands:
+      - eval $(ssh-agent)
+      - echo "SSH_AUTH_SOCK ${SSH_AUTH_SOCK}"
+      - eval `./helpers/get_commit_infos.py -b ${SOURCE_S3_BUCKET} -k ${SOURCE_S3_OBJECT} -v "${CODEBUILD_RESOLVED_SOURCE_VERSION}" | grep export`
+      - readonly SHORT_COMMIT_ID=$(echo ${COMMIT_ID} | cut -b -7 )
+      - export SHORT_COMMIT_ID
+      - curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.13/2020-08-04/bin/linux/amd64/kubectl
+      - chmod +x ./kubectl
+      - mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+      - kubectl version --short --client
+  pre_build:
+    commands:
+      - export LC_ALL="en_US.utf8"
+      - echo Starting pre-build...
+      - source config/main.sh
+      - mkdir .kube
+      - readonly KUBECONFIG=.kube/config
+      - export KUBECONFIG
+      - ./helpers/get_secret.py -k $KUBECONFIG -s $KUBERNETES_SECRET
+      - ls -lsa
+  build:
+    commands:
+      - echo Deploy started on `date`
+      - ./deploy/deploy.sh
+  post_build:
+    commands:
+      - echo Deploy completed on `date`

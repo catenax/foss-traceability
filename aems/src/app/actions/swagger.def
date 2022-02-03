@@ -1,0 +1,551 @@
+/**
+ * @swagger
+ *
+ * definitions:
+ *
+ *   Asset:
+ *     type: object
+ *     properties:
+ *       componentSerialNumbers:
+ *         type: array
+ *         items:
+ *           type: string
+ *       creationDate:
+ *         type: string
+ *       manufacturer:
+ *         type: string
+ *       partNameManufacturer:
+ *         type: string
+ *       partNumberCustomer:
+ *         type: string
+ *       partNumberManufacturer:
+ *         type: string
+ *       productionCountryCodeManufacturer:
+ *         type: string
+ *       productionDateGmt:
+ *         type: string
+ *       serialNumberType:
+ *         type: string
+ *       manufacturerLine:
+ *         type: string
+ *       manufacturerPlant:
+ *         type: string
+ *       customFields:
+ *         type: object
+ *       qualityDocuments:
+ *         type: object
+ *       qualityStatus:
+ *         type: string
+ *       serialNumberCustomer:
+ *         type: string
+ *       serialNumberManufacturer:
+ *         type: string
+ *       status:
+ *         type: string
+ *
+ *   AssetList:
+ *     type: object
+ *     properties:
+ *       asset:
+ *         type: array
+ *         items:
+ *           $ref: '#/definitions/Asset'
+ *
+ *   AssetResponse:
+ *     type: object
+ *     properties:
+ *       data:
+ *         type: array
+ *         items:
+ *           $ref: '#/definitions/Asset'
+ *       status:
+ *         type: number
+ *       resultLength:
+ *         type: number
+ *   AssetWithParent:
+ *     type: object
+ *     properties:
+ *       componentSerialNumbers:
+ *         type: array
+ *         items:
+ *           type: string
+ *       creationDate:
+ *         type: string
+ *       manufacturer:
+ *         type: string
+ *       partNameManufacturer:
+ *         type: string
+ *       partNumberCustomer:
+ *         type: string
+ *       partNumberManufacturer:
+ *         type: string
+ *       productionCountryCodeManufacturer:
+ *         type: string
+ *       productionDateGmt:
+ *         type: string
+ *       serialNumberType:
+ *         type: string
+ *       manufacturerLine:
+ *         type: string
+ *       manufacturerPlant:
+ *         type: string
+ *       customFields:
+ *         type: object
+ *       qualityDocuments:
+ *         type: object
+ *       qualityStatus:
+ *         type: string
+ *       serialNumberCustomer:
+ *         type: string
+ *       serialNumberManufacturer:
+ *         type: string
+ *       status:
+ *         type: string
+ *       parent:
+ *         type: object
+ *
+ *   AssetWithParentResponse:
+ *     type: object
+ *     properties:
+ *       data:
+ *         type: object
+ *         $ref: '#/definitions/AssetWithParent'
+ *
+ *   AssetListResponse:
+ *     type: object
+ *     properties:
+ *       data:
+ *         type: array
+ *         items:
+ *            $ref: '#/definitions/Asset'
+ *
+ *
+ *   Filter:
+ *     type: object
+ *     properties:
+ *       manufacturer:
+ *         type: string
+ *       partNameNumber:
+ *         type: string
+ *       productionCountryCode:
+ *         type: string
+ *       productionDateFrom:
+ *         type: string
+ *       productionDateTo:
+ *         type: string
+ *       qualityStatus:
+ *         type: string
+ *       serialNumberManufacturer:
+ *         type: string
+ *       type:
+ *         type: string
+ *   FilterSerialNumber:
+ *     type: object
+ *     properties:
+ *       serialNumberManufacturer:
+ *         type: string
+ *
+ *   Transaction:
+ *     type: object
+ *     properties:
+ *       description:
+ *         type: string
+ *       id:
+ *         type: string
+ *       propertyName:
+ *         type: string
+ *       propertyNewValue:
+ *         type: string
+ *       propertyOldValue:
+ *         type: string
+ *       serialNumberCustomer:
+ *         type: string
+ *       status:
+ *         type: string
+ *       timestampChanged:
+ *         type: string
+ *       timestampCreated:
+ *         type: string
+ *       userId:
+ *         type: string
+ *
+ *   TransactionList:
+ *     type: array
+ *     items:
+ *       $ref: '#/definitions/Transaction'
+ *
+ *   TransactionInput:
+ *     type: object
+ *     properties:
+ *       serialNumberCustomer:
+ *         type: string
+ *       propertyName:
+ *         type: string
+ *       propertyOldValue:
+ *         type: string
+ *       propertyNewValue:
+ *         type: string
+ *
+ *   TransactionListInput:
+ *     type: array
+ *     items:
+ *       $ref: '#/definitions/TransactionInput'
+ *
+ *   Tiles:
+ *     type: object
+ *     properties:
+ *       assetsCount:
+ *         type: integer
+ *       componentsCount:
+ *         type: integer
+ *       transactionsCount:
+ *         type: integer
+ *       vehiclesCount:
+ *         type: integer
+ *
+ *   KpiStatsResponse:
+ *     type: object
+ *     properties:
+ *       data:
+ *         type: object
+ *         properties:
+ *           assetsCount:
+ *             type: integer
+ *           vehiclesCount:
+ *             type: integer
+ *           assetsPerDay:
+ *             type: object
+ *           qualityStatusRatio:
+ *             type: object
+ *           AssetsCountPerCountryAndSupplier:
+ *             type: object
+ *
+ *   ACL:
+ *     type: object
+ *     properties:
+ *       ACL:
+ *         type: object
+ *         properties:
+ *           supplierAsupplierB:
+ *             type: object
+ *             properties:
+ *               entities:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               comment:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *               timestamp:
+ *                 type: string
+ *               changedBy:
+ *                 type: string
+ *               history:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *       owner:
+ *         type: string
+ *   ACLUpdateRequest:
+ *     type: object
+ *     properties:
+ *       targetOrg:
+ *         type: string
+ *       comment:
+ *         type: string
+ *
+ *   SuccessAndFailedArray:
+ *     type: object
+ *     properties:
+ *       successList:
+ *         type: array
+ *         items:
+ *           type: string
+ *       failedList:
+ *         type: array
+ *         items:
+ *           type: string
+ *
+ *
+ *   Investigation:
+ *     type: object
+ *     properties:
+ *       creator:
+ *         type: string
+ *       description:
+ *         type: string
+ *       title:
+ *         type: string
+ *       investigationID:
+ *         type: string
+ *       timestamp:
+ *         type: string
+ *       status:
+ *         type: string
+ *       type:
+ *         type: string
+ *       entities:
+ *         type: array
+ *         items:
+ *           type: string
+ *       participatingOrgs:
+ *         type: object
+ *         properties:
+ *           orgMSP:
+ *             type: object
+ *             properties:
+ *               componentsSerialNumbers:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               mspID:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *               timestamp:
+ *                 type: string
+ *
+ *   InvestigationArray:
+ *     type: array
+ *     items:
+ *       $ref: '#/definitions/Investigation'
+ *
+ *
+ *   createAlert:
+ *     type: object
+ *     properties:
+ *       alertID:
+ *         type: string
+ *       processedSerialNumberCustomers:
+ *         type: number
+ *         items:
+ *           type: number
+ *       failedSerialNumberCustomers:
+ *         type: number
+ *         items:
+ *           type: number
+ *       eventsCreated:
+ *         type: number
+ *         items:
+ *           type: number
+ *
+ *   updateAlert:
+ *     type: object
+ *     properties:
+ *       alertID:
+ *         type: string
+ *       qualityType:
+ *         type: string
+ *       qualityStatus:
+ *         type: string
+ *       serialNumberCustomersAdded:
+ *         type: number
+ *         items:
+ *           type: number
+ *       serialNumberCustomersFailed:
+ *         type: number
+ *         items:
+ *           type: number
+ *       serialNumberCustomersUpdated:
+ *         type: number
+ *         items:
+ *           type: number
+ *       serialNumberCustomersDeleted:
+ *         type: number
+ *         items:
+ *           type: number
+ *
+ *   qualityAlert:
+ *     type: object
+ *     properties:
+ *       alertID:
+ *         type: string
+ *       qualityType:
+ *         type: string
+ *       qualityStatus:
+ *         type: boolean
+ *       serialNumberCustomer:
+ *         type: string
+ *       mspid:
+ *         type: string
+ *       status:
+ *         type: string
+ *       propagated:
+ *         type: boolean
+ *       appName:
+ *         type: string
+ *       partNameManufacturer:
+ *         type: string
+ *       partNumberManufacturer:
+ *         type: string
+ *       childPartNameManufacturer:
+ *         type: string
+ *       childPartNumberManufacturer:
+ *         type: string
+ *       history:
+ *         type: object
+ *         properties:
+ *           qualityType:
+ *             type: string
+ *           qualityAlert:
+ *             type: string
+ *
+ *   eventData:
+ *     type: object
+ *     properties:
+ *       eventUid:
+ *         type: string
+ *       eventOriginCompany:
+ *         type: string
+ *       eventTargetCompany:
+ *         type: string
+ *       eventFlow:
+ *         type: string
+ *       propagated:
+ *         type: boolean
+ *
+ *
+ *   eventBodyObj:
+ *     type: object
+ *     properties:
+ *       customerUniqueID:
+ *         type: string
+ *       qualityAlert:
+ *         type: object
+ *         properties:
+ *            QualityType:
+ *              type: boolean
+ *            QualityAlert:
+ *              type: boolean
+ *
+ *   commentBodyObj:
+ *     type: object
+ *     properties:
+ *       message:
+ *         type: string
+ *       originCompany:
+ *         type: string
+ *       targetCompany:
+ *         type: string
+ *       company:
+ *         type: string
+ *       timestamp:
+ *         type: string
+ *
+ *   alertfilter:
+ *     type: object
+ *     properties:
+ *       alert_id:
+ *         type: string
+ *       serial_number_customer:
+ *         type: string
+ *       child_serial_number_customer:
+ *         type: string
+ *       quality_type:
+ *         type: string
+ *       quality_alert:
+ *         type: boolean
+ *       mspid:
+ *         type: string
+ *       customer_oneid:
+ *         type: string
+ *       status:
+ *         type: string
+ *       propagated:
+ *         type: boolean
+ *       app_name:
+ *         type: string
+ *
+ *
+ *   eventfilter:
+ *     type: object
+ *     properties:
+ *       event_uid:
+ *         type: string
+ *       event_origin_company:
+ *         type: string
+ *       event_target_company:
+ *         type: string
+ *       event_origin:
+ *         type: string
+ *       event_type:
+ *         type: string
+ *       event_status:
+ *         type: string
+ *       propagated:
+ *         type: boolean
+ *
+ *   idsEventData:
+ *     type: object
+ *     properties:
+ *       eventUID:
+ *         type: string
+ *       superId:
+ *         type: string
+ *       eventOriginApp:
+ *         type: string
+ *       eventTimestamp:
+ *         type: string
+ *       eventOriginCompany:
+ *         type: string
+ *       eventTargetCompany:
+ *         type: string
+ *       eventType:
+ *         type: string
+ *       eventStatus:
+ *         type: string
+ *       eventFlow:
+ *         type: string
+ *       relatedEvent:
+ *         type: string
+ *       comments:
+ *         type: array
+ *         items:
+ *           $ref: '#/definitions/commentBodyObj'
+ *       eventBody:
+ *         type: array
+ *         items:
+ *           $ref: '#/definitions/eventBodyObj'
+ *
+ *   createQualityAlert:
+ *     type: object
+ *     properties:
+ *       qualityType:
+ *         type: string
+ *         example: "MAJOR"
+ *       qualityAlert:
+ *         type: boolean
+ *       serialNumberCustomerList:
+ *         type: array
+ *         items:
+ *           type: string
+ *
+ *
+ *
+ *   getAllQualityAlert:
+ *     type: object
+ *     properties:
+ *       alertId:
+ *         type: string
+ *       status:
+ *         type: string
+ *       alertFlow:
+ *         type: string
+ *       relatedAlertID:
+ *         type: string
+ *       partsAffected:
+ *         type: array
+ *         items:
+ *           $ref: '#/definitions/qualityAlert'
+ *       events:
+ *         type: array
+ *         items:
+ *           $ref: '#/definitions/eventData'
+ *       comments:
+ *         type: array
+ *         items:
+ *           $ref: '#/definitions/commentBodyObj'
+ *
+ *
+ */

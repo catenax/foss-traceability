@@ -1,0 +1,40 @@
+version: 0.2
+
+env:
+  variables:
+    ENVIRONMENT: dev
+
+phases:
+  install:
+    commands:
+      - eval $(ssh-agent)
+      - echo "SSH_AUTH_SOCK ${SSH_AUTH_SOCK}"
+      - eval `./helpers/get_commit_infos.py -b ${SOURCE_S3_BUCKET} -k ${SOURCE_S3_OBJECT} -v "${CODEBUILD_RESOLVED_SOURCE_VERSION}" | grep export`
+      - readonly SHORT_COMMIT_ID=$(echo ${COMMIT_ID} | cut -b -7 )
+      - export SHORT_COMMIT_ID
+      - |
+        pip install -r helpers/requirements.txt
+  pre_build:
+    commands:
+      - pip3 install awscli --upgrade --user
+      - aws codeartifact login --tool npm --repository partchain-core --domain partchain --domain-owner 737189273666  --region eu-west-1
+      - export LC_ALL="en_US.utf8"
+      - echo Starting pre-build...
+      - ls -ls
+      - source config/main.sh
+  build:
+    commands:
+      - echo Build started on `date`
+      - npm install
+      - ./build/build.sh
+      - ./build/docker_scan_report.sh
+  post_build:
+    commands:
+      - echo Build completed on `date`
+
+reports:
+  ecr-scan-reports:
+    files:
+      - "**/*.xml"
+    base-directory: "reports"
+    discard-paths: no

@@ -1,0 +1,69 @@
+version: 0.2
+
+env:
+  variables:
+      SONARURL: https://itgov-ci.bmwgroup.net/sonar
+  #parameter-store:
+     # key: "value"
+     # key: "value"
+  secrets-manager:
+      SONARLOGIN: partchain_sonarqube_token
+  #exported-variables:
+     # - variable
+     # - variable
+  #git-credential-helper: yes
+#batch:
+  #fast-fail: true
+  #build-list:
+  #build-matrix:
+  #build-graph:
+phases:
+  #install:
+    #Wenn Sie das Ubuntu-Standard-Image 2.0 oder höher verwenden, müssen Sie Laufzeitversionen angeben.
+    #Wenn Sie Laufzeitversionen angeben und ein anderes Image als das Ubuntu-Standard-Image 2.0 verwenden, schlägt der Build fehl.
+    #runtime-versions:
+      # name: version
+      # name: version
+    #commands:
+      # - command
+      # - command
+  #pre_build:
+    #commands:
+      # - command
+      # - command
+  build:
+    commands:
+       - npm config set proxy http://proxy.ccc-ng-1.eu-west-1.aws.cloud.bmw:8080
+       - npm config set http-proxy http://proxy.ccc-ng-1.eu-west-1.aws.cloud.bmw:8080
+       - npm config set https-proxy http://proxy.ccc-ng-1.eu-west-1.aws.cloud.bmw:8080
+       - npm config set noproxy localhost,127.0.0.1,.muc,.aws.cloud.bmw,.azure.cloud.bmw,.bmw.corp,.bmwgroup.net
+       - npm install -g sonarqube-scanner
+       - npm install -g jest
+       - npm install
+       - curl -v https://itgov-ci.bmwgroup.net/sonar
+       - jest --coverage
+       - sonar-scanner -Dsonar.projectKey=$SONARPROJECTKEY  -Dsonar.host.url=$SONARURL -Dsonar.login=$SONARLOGIN -Dsonar.testExecutionReportPaths=test-report.xml -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info -Dsonar.test.inclusions=**/*.spec.ts -Dsonar.sources=src -Dsonar.exclusions=**/target/**,**/node_modules/**,**/build/**,**/bower_components/**,**/webapp/**
+       - chmod +x helpers/checkNewSonarMeasures.py
+       - ./helpers/checkNewSonarMeasures.py
+  #post_build:
+    #commands:
+      # - command
+      # - command
+#reports:
+  #report-name-or-arn:
+    #files:
+      # - location
+      # - location
+    #base-directory: location
+    #discard-paths: yes
+    #file-format: JunitXml | CucumberJson
+#artifacts:
+  #files:
+    # - location
+    # - location
+  #name: $(date +%Y-%m-%d)
+  #discard-paths: yes
+  #base-directory: location 
+cache:
+  paths:
+    - '/root/.m2/**/*'

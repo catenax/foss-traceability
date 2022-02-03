@@ -1,4 +1,4 @@
-# PartChain Asset Exchange Service
+#Asset Exchange Micro Service
 
 > __Note:__ This repository is still under active development! Breaking changes are possible, and we are working on improving code quality.
 

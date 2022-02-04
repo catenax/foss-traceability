@@ -1,6 +1,6 @@
 FROM node:14.15.4
 # Copy source files
-COPY / /
+COPY /aems /
 # Install dependencies
 RUN npm install
 

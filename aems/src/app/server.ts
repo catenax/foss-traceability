@@ -19,6 +19,7 @@ import * as compression from 'compression';
 import * as cors from 'cors';
 import * as session from 'express-session';
 import * as bodyParser from 'body-parser';
+import helmet from "helmet";
 const KeycloakMultirealm = require('keycloak-connect-multirealm');
 
 import Routes from "./interfaces/Routes";
@@ -110,6 +111,7 @@ export default class Server {
      */
     initApp(): void {
         this.app = express();
+        this.app.use(helmet());
     }
 
     /**
@@ -178,6 +180,7 @@ export default class Server {
      */
     middleware(middleware: express.Application): void {
         this.app.use(middleware);
+
     }
 
     /**

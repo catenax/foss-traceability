@@ -3,6 +3,8 @@ name: Deploy to AWS
 on:
   push:
     branches: [ main ]
+  paths:
+    - aems/*
 
 jobs:
 

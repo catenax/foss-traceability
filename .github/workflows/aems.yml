@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
      - 'aems/**'
+     - '.github/workflows/aems.yml'
 
 jobs:
 

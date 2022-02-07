@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
      - 'laapi/**'
+     - '.github/workflows/laapi.yml'
 
 jobs:
 

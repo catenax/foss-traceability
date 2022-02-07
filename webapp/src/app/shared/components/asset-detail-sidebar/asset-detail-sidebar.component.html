@@ -1,0 +1,203 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="asset-detail-container">
+  <ng-container *viewContainer="this.asset$ | async; main: mainTmp; error: errorTmp; loading: loaderTmp">
+  </ng-container>
+
+  <ng-template #mainTmp let-asset="view">
+    <section class="asset-detail-header">
+      <div class="asset-detail-flex">
+        <div class="asset-detail-title">
+          <h2 class="animated-skeleton break">{{ asset.data?.partNameManufacturer }}</h2>
+          <ng-container *ngIf="this.isAllowedToEdit(asset.data); else noVisibilityOfOtherLayers">
+            <svg-icon
+              *ngIf="asset.data?.partIcon"
+              size="sm"
+              key="{{ asset.data?.partIcon }}"
+              appTooltip
+              [tooltip]="asset.data?.partsAvailable"
+            ></svg-icon>
+          </ng-container>
+          <ng-template #noVisibilityOfOtherLayers>
+            <svg-icon size="sm" key="ic-all-parts-available" appTooltip [tooltip]="'All child parts available'">
+            </svg-icon>
+          </ng-template>
+        </div>
+        <p class="animated-skeleton large-text truncate">{{ asset.data?.businesspartnername }}</p>
+      </div>
+      <div class="asset-detail-header__icon">
+        <svg-icon size="sm" class="text-tundora cursor-pointer" key="close-fill" (click)="this.dialogClose()">
+        </svg-icon>
+      </div>
+    </section>
+
+    <section class="asset-detail-sections-container">
+      <div class="asset-detail-summary-section">
+        <svg-icon size="sm" key="ic-factory"></svg-icon>
+        <p *ngIf="asset.data?.status; else emptyLabel" class="regular-text animated-skeleton">
+          {{ asset.data?.status }}
+        </p>
+      </div>
+      <div class="asset-detail-summary-section">
+        <svg-icon size="sm" key="ic-quality-type"></svg-icon>
+        <div class="asset-detail-quality-alert-items">
+          <svg-icon
+            *ngIf="asset.data?.icon"
+            size="xs"
+            [ngClass]="{
+              'text-success': asset.data?.icon === 'checkbox-circle-line',
+              'text-error': asset.data?.icon === 'spam-line',
+              'text-warning': asset.data?.icon === 'error-warning-line',
+              'text-alert': asset.data?.icon === 'alert-line',
+              'text-danger': asset.data?.icon === 'close-circle-line'
+            }"
+            key="{{ asset.data?.icon }}"
+          ></svg-icon>
+          <p class="animated-skeleton">{{ asset.data?.qualityType }}</p>
+          <svg-icon
+            *ngIf="asset.data && this.isAllowedToEdit(asset.data)"
+            size="xs"
+            key="pencil-line"
+            class="ml-2 cursor-pointer"
+            (click)="this.openQualityAlertModal(asset.data)"
+          ></svg-icon>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+    </section>
+
+    <section class="asset-detail-sections-container">
+      <h5>Manufacturer data</h5>
+      <div class="asset-detail-flex">
+        <p class="small-text">Part number</p>
+        <p class="animated-skeleton">{{ asset.data?.partNumberManufacturer }}</p>
+      </div>
+      <div class="asset-detail-flex">
+        <p class="small-text">Serial Number</p>
+        <div class="asset-detail-clipboard-section">
+          <p class="animated-skeleton truncate">{{ asset.data?.serialNumberManufacturer }}</p>
+          <svg-icon
+            *ngIf="asset.data"
+            class="cursor-pointer"
+            key="file-copy-line"
+            size="xs"
+            (click)="this.copyToClipboard(asset.data?.serialNumberCustomer)"
+          >
+          </svg-icon>
+        </div>
+      </div>
+      <div class="asset-detail-flex">
+        <p class="small-text">Plant</p>
+        <p *ngIf="asset.data?.businesspartnerplantname; else emptyLabel" class="animated-skeleton">
+          {{ asset.data?.businesspartnerplantname }}
+        </p>
+      </div>
+      <div class="asset-detail-flex">
+        <p class="small-text">Line</p>
+        <p *ngIf="asset.data?.manufacturerLine; else emptyLabel" class="animated-skeleton">
+          {{ asset.data?.manufacturerLine }}
+        </p>
+      </div>
+      <mat-divider></mat-divider>
+    </section>
+
+    <div *ngIf="asset.data?.manufactureroneid | appInclude" class="flex-auto"></div>
+
+    <ng-container *ngIf="!(asset.data?.manufactureroneid | appInclude) || !asset.data?.childComponents.length">
+      <section class="asset-detail-sections-container">
+        <h5>Customer data</h5>
+        <div class="asset-detail-flex">
+          <p class="small-text">Customer</p>
+          <p class="animated-skeleton" *ngIf="asset.data?.customerpartnername; else emptyLabel">
+            {{ asset.data?.customerpartnername }}
+          </p>
+        </div>
+        <div class="asset-detail-flex">
+          <p class="small-text">Part Number</p>
+          <p class="animated-skeleton" *ngIf="asset.data?.partNumberCustomer; else emptyLabel">
+            {{ asset.data?.partNumberCustomer }}
+          </p>
+        </div>
+        <div class="asset-detail-flex">
+          <p class="small-text">Serial Number</p>
+          <div class="asset-detail-clipboard-section">
+            <p class="animated-skeleton truncate" *ngIf="asset.data?.serialNumberCustomer; else emptyLabel">
+              {{ asset.data?.serialNumberCustomer }}
+            </p>
+            <svg-icon
+              *ngIf="asset.data"
+              class="cursor-pointer"
+              key="file-copy-line"
+              size="xs"
+              (click)="this.copyToClipboard(asset.data?.serialNumberCustomer)"
+            >
+            </svg-icon>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+      </section>
+
+      <section class="parent-section" *ngIf="asset.data?.parents && asset.data?.parents.length; else noParent">
+        <h5>Parents</h5>
+        <div class="parent-section-content" *ngFor="let parent of asset.data?.parents; let i = index">
+          <svg-icon size="sm" key="ic-parent"></svg-icon>
+          <div class="parent-flex">
+            <a class="text-sm animated-skeleton" (click)="this.getParentDetails(parent)">{{
+              parent.partNameManufacturer
+            }}</a>
+            <p class="small-text animated-skeleton">SN: {{ parent.serialNumberCustomer | shortenSerialNumber }}</p>
+          </div>
+        </div>
+      </section>
+    </ng-container>
+
+    <section
+      class="asset-detail-btn-section"
+      [ngClass]="{
+        'padding-bottom': this.assetType === 'other' || !asset.data?.childComponents.length
+      }"
+    >
+      <app-button [type]="'submit'" [button]="'secondary'" (clickEvent)="this.navigateToDetailPage(asset?.data)">
+        See full details
+      </app-button>
+    </section>
+
+    <ng-template #emptyLabel>
+      <p>
+        -
+      </p>
+    </ng-template>
+
+    <ng-template #noParent>
+      <section class="parent-section">
+        <h5>Parents</h5>
+        <div class="parent-section-content">
+          <svg-icon size="sm" key="ic-parent"></svg-icon>
+          <p class="regular-text">
+            -
+          </p>
+        </div>
+      </section>
+    </ng-template>
+  </ng-template>
+
+  <ng-template #loaderTmp let-asset="view">
+    <app-asset-detail-sidebar-skeleton></app-asset-detail-sidebar-skeleton>
+  </ng-template>
+
+  <ng-template #errorTmp let-asset="view"> </ng-template>
+</div>

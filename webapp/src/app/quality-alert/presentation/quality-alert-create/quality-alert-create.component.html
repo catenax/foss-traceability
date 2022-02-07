@@ -1,0 +1,73 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<header class="create-header">
+  <h4 class="align-middle">
+    Change quality type
+  </h4>
+  <svg-icon key="close-fill" size="sm" class="text-tundora cursor-pointer mt-1" (click)="dialogClose()"> </svg-icon>
+</header>
+
+<mat-divider class="create-divider"></mat-divider>
+<div class="flex flex-row items-center bg-warning p-2 mt-3 mx-4" *ngIf="this.alreadyQueuedSerialNumbers()">
+  <svg-icon key="error-warning-line" class="text-white mr-2"></svg-icon>
+  <p class="small-text text-white">
+    Some of the selected serial numbers might've already been queued
+  </p>
+</div>
+<div class="create-container">
+  <form [formGroup]="this.createForm">
+    <p class="small-text">Please choose a new quality type for the parts</p>
+    <mat-form-field class="form-field" appearance="fill">
+      <mat-label>Quality type</mat-label>
+      <mat-select formControlName="type" required>
+        <mat-option *ngFor="let type of types; let i = index" [value]="type">
+          {{ type }}
+        </mat-option>
+      </mat-select>
+      <mat-error class="regular-text" *ngIf="createForm.get('type').hasError('required')"
+        >You must select a value</mat-error
+      >
+    </mat-form-field>
+    <mat-error class="small-text" *ngIf="this.hasError">You must select a value</mat-error>
+    <mat-error class="small-text" *ngIf="this.alreadyQueued"
+      >The selected serial numbers are already queued or the quality type is already marked as
+      {{ createForm.get('type').value }}</mat-error
+    >
+
+    <section class="description-section">
+      <mat-form-field class="description-section__field">
+        <mat-label class="small-text">Description</mat-label>
+        <textarea matInput formControlName="description" class="regular-text" rows="4" cols="30"></textarea>
+      </mat-form-field>
+    </section>
+  </form>
+
+  <section class="btn-section">
+    <app-button class="btn-section__btn-1" [type]="'submit'" [button]="'secondary'" (clickEvent)="this.dialogClose()"
+      >Cancel</app-button
+    >
+    <app-button
+      appTooltip
+      [tooltip]="'For this change to happen, it needs to be distributed in the quality alerts area'"
+      class="btn-section__btn-2"
+      [type]="'submit'"
+      [button]="'primary'"
+      (clickEvent)="this.addToQueue()"
+      >Add to queue</app-button
+    >
+  </section>
+</div>

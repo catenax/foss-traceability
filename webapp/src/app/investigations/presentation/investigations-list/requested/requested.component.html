@@ -1,0 +1,48 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<section class="requested-list-container">
+  <ng-container *ngIf="this.filteredRequestedInvestigations.length; else empty">
+    <div class="requested-list-items" *ngFor="let alert of this.filteredRequestedInvestigations">
+      <p class="regular-text">
+        <strong>{{ alert.numberOfParts }} part<ng-container *ngIf="alert.numberOfParts !== 1">s</ng-container></strong>
+        produced by <strong>{{ alert.originCompany }} </strong>
+      </p>
+      <div class="requested-list-item-content">
+        <p class="regular-text">{{ alert.timestamp | appDateSplit }}</p>
+        <section class="requested-list-item-content__actions">
+          <span class="requested-list-item-content__actions__icon" (click)="this.viewDetails(alert.alertId)">
+            <svg-icon size="sm" key="eye-line" color="#5b708f" appTooltip [tooltip]="'View details'"></svg-icon>
+          </span>
+        </section>
+      </div>
+    </div>
+    <mat-paginator
+      [length]="this.pageLength"
+      [pageSize]="this.pageSize"
+      [hidePageSize]="true"
+      (page)="this.pageChangeEvent($event)"
+    ></mat-paginator>
+  </ng-container>
+
+  <ng-template #empty>
+    <app-quality-alert-empty-state
+      [imageUrl]="'/assets/images/relax.svg'"
+      [title]="'Great news'"
+      [message]="'There are no requested quality investigations'"
+    ></app-quality-alert-empty-state>
+  </ng-template>
+</section>

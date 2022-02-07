@@ -1,0 +1,331 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<app-header title="{{ this.title }}"></app-header>
+<div class="dashboard-grid">
+  <section class="parts-section">
+    <ng-container
+      *viewContainer="
+        this.numberOfParts$ | async;
+        main: numberOfPartsMainTmp;
+        error: numberOfPartsErrorTmp;
+        loading: numberOfPartsLoaderTmp
+      "
+    >
+    </ng-container>
+
+    <ng-template #numberOfPartsMainTmp let-numberOfParts="view">
+      <app-card [id]="1" [label]="'Total of parts'" [icon]="'ic-car-v-2'" [stats]="numberOfParts?.data"></app-card>
+    </ng-template>
+
+    <ng-template #numberOfPartsErrorTmp let-numberOfParts="view">
+      <app-card [id]="1" [label]="'Total of parts'" [icon]="'ic-car-v-2'" [stats]="0"></app-card>
+    </ng-template>
+
+    <ng-template #numberOfPartsLoaderTmp let-numberOfParts="view">
+      <app-card [id]="1" [label]="'Total of parts'" [icon]="'ic-car-v-2'" [stats]="''"></app-card>
+    </ng-template>
+  </section>
+
+  <section class="quality-alerts-section">
+    <ng-container *ngIf="this.partsWithQualityAlerts$ | async as qualityAlerts; else loadingParts">
+      <ng-container *ngIf="qualityAlerts.error; else partsAvailable">
+        <app-card [id]="2" [label]="'Parts with quality alerts'" [icon]="'alarm-warning-line'" [stats]="0"></app-card>
+      </ng-container>
+
+      <ng-template #partsAvailable>
+        <app-card
+          [id]="2"
+          [label]="'Parts with quality alerts'"
+          [icon]="'alarm-warning-line'"
+          [stats]="qualityAlerts?.data"
+        ></app-card>
+      </ng-template>
+    </ng-container>
+
+    <ng-template #loadingParts>
+      <app-card [id]="2" [label]="'Parts with quality alerts'" [icon]="'alarm-warning-line'" [stats]="''"></app-card>
+    </ng-template>
+  </section>
+
+  <section class="investigations-section">
+    <ng-container *ngIf="this.partsWithQualityInvestigations$ | async as investigations; else loadingParts">
+      <ng-container *ngIf="investigations.error; else partsAvailable">
+        <app-card
+          [id]="3"
+          [label]="'Parts on active investigations'"
+          [icon]="'file-search-line'"
+          [stats]="0"
+        ></app-card>
+      </ng-container>
+
+      <ng-template #partsAvailable>
+        <app-card
+          [id]="3"
+          [label]="'Parts on active investigations'"
+          [icon]="'file-search-line'"
+          [stats]="investigations?.data"
+        ></app-card>
+      </ng-template>
+    </ng-container>
+
+    <ng-template #loadingParts>
+      <app-card [id]="2" [label]="'Parts on active investigations'" [icon]="'file-search-line'" [stats]="''"></app-card>
+    </ng-template>
+  </section>
+
+  <section class="alerts-section">
+    <div class="alerts-section-container">
+      <div class="alerts-title-section">
+        <div class="alerts-title-section__content">
+          <svg-icon class="mb-1" key="alarm-warning-line" size="sm"></svg-icon>
+          <h3>Latest received quality alerts</h3>
+        </div>
+        <a (click)="this.navigateToAlerts()">View all</a>
+      </div>
+
+      <ng-container
+        *viewContainer="
+          this.topQualityAlerts$ | async;
+          main: mainAlertsTmp;
+          error: errorAlertsTmp;
+          loading: loaderAlertsTmp
+        "
+      >
+      </ng-container>
+
+      <ng-template #mainAlertsTmp let-alert="view">
+        <app-quality-list [alerts]="alert.data" (pageNavigation)="this.viewDetails($event)"></app-quality-list>
+      </ng-template>
+
+      <ng-template #loaderAlertsTmp let-alert="view">
+        <app-received-alert-empty-state></app-received-alert-empty-state>
+      </ng-template>
+
+      <ng-template #errorAlertsTmp let-alert="view">
+        <div class="mt-6">
+          <app-quality-alert-empty-state
+            [title]="'Something went wrong!'"
+            [imageUrl]="'/assets/images/undraw_server_down_s4lk.svg'"
+            [message]="'Sorry we cannot complete your request. Try again later.'"
+          ></app-quality-alert-empty-state>
+        </div>
+      </ng-template>
+    </div>
+  </section>
+
+  <section class="alerts-section">
+    <div class="alerts-section-container">
+      <div class="alerts-title-section">
+        <div class="alerts-title-section__content">
+          <svg-icon key="file-search-line" size="sm"></svg-icon>
+          <h3>Latest received quality investigations</h3>
+        </div>
+        <a (click)="this.navigateToInvestigations()">View all</a>
+      </div>
+
+      <ng-container
+        *viewContainer="
+          this.topQualityInvestigations$ | async;
+          main: mainInvestigationsTmp;
+          error: errorInvestigationsTmp;
+          loading: loaderInvestigationsTmp
+        "
+      >
+      </ng-container>
+
+      <ng-template #mainInvestigationsTmp let-investigation="view">
+        <app-quality-list
+          [alerts]="investigation.data"
+          [isInvestigation]="true"
+          (pageNavigation)="this.viewDetails($event)"
+        ></app-quality-list>
+      </ng-template>
+      <ng-template #errorInvestigationsTmp let-investigation="view">
+        <div class="mt-6">
+          <app-quality-alert-empty-state
+            [title]="'Something went wrong!'"
+            [imageUrl]="'/assets/images/undraw_server_down_s4lk.svg'"
+            [message]="'Sorry we cannot complete your request. Try again later.'"
+          ></app-quality-alert-empty-state>
+        </div>
+      </ng-template>
+      <ng-template #loaderInvestigationsTmp let-investigation="view">
+        <app-received-alert-empty-state></app-received-alert-empty-state>
+      </ng-template>
+    </div>
+  </section>
+
+  <section class="donut-chart-section">
+    <div class="alerts-title-section">
+      <h3>Parts with quality alerts</h3>
+      <a (click)="this.navigateToParts()">View all</a>
+    </div>
+
+    <ng-container
+      *viewContainer="this.alertTypes$ | async; main: mainDonutTmp; error: errorDonutTmp; loading: loaderDonutTmp"
+    >
+    </ng-container>
+
+    <ng-template #mainDonutTmp let-alert="view">
+      <ng-container *ngIf="alert.data.length; else emptyState">
+        <app-alert-donut-chart [chartData]="alert.data"></app-alert-donut-chart>
+      </ng-container>
+
+      <ng-template #emptyState>
+        <div class="histogram-chart-empty-state">
+          <img src="/assets/images/sec_on.svg" alt="No data" />
+          <h2>No parts have been targeted with quality alerts</h2>
+        </div>
+      </ng-template>
+    </ng-template>
+
+    <ng-template #errorDonutTmp let-alert="view"> </ng-template>
+
+    <ng-template #loaderDonutTmp let-alert="view">
+      <div class="chart-spinner-container">
+        <mat-spinner [diameter]="100"></mat-spinner>
+      </div>
+    </ng-template>
+  </section>
+
+  <section class="histogram-chart-section">
+    <div class="histogram-title-row">
+      <h3>Parts with quality alerts histogram</h3>
+      <div class="histogram-title-row__content">
+        <input
+          class="histogram-date-input"
+          type="text"
+          ngxDaterangepickerMd
+          [(ngModel)]="this.selected"
+          [showCustomRangeLabel]="true"
+          [alwaysShowCalendars]="true"
+          [ranges]="this.ranges"
+          [linkedCalendars]="true"
+          [placeholder]="'--/--/----  --/--/----'"
+          [drops]="'up'"
+          [opens]="'left'"
+          [locale]="this.locale"
+          [autoApply]="true"
+          (ngModelChange)="this.setDates($event)"
+        />
+        <svg-icon size="sm" class="calendar-svg" key="calendar-line"></svg-icon>
+
+        <div class="histogram-quick-filter">
+          <p class="large-text">Show:</p>
+          <p class="large-text font-bold ml-1">{{ this.selectedValue }}</p>
+          <svg-icon
+            (click)="this.isExpanded = !this.isExpanded; $event.stopPropagation()"
+            key="{{ this.getIcon() }}"
+            size="sm"
+            class="cursor-pointer text-tundora"
+          >
+          </svg-icon>
+
+          <ul
+            class="chart-group"
+            [ngClass]="{
+              'fade-in': this.isExpanded,
+              'fade-out': !this.isExpanded
+            }"
+            *ngIf="this.isExpanded"
+            (clickOutside)="this.isExpanded = false"
+          >
+            <li
+              class="chart-group__item"
+              *ngFor="let group of this.dateGrouping; let i = index"
+              (click)="this.getSelectedValue(group)"
+            >
+              <span>{{ group }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <ng-container
+      *viewContainer="
+        this.alertsByTime$ | async;
+        main: mainHistogramTmp;
+        error: errorHistogramTmp;
+        loading: loaderHistogramTmp
+      "
+    >
+    </ng-container>
+
+    <ng-template #mainHistogramTmp let-histogram="view">
+      <ng-container *ngIf="histogram.data.groupedData && histogram.data.groupedData.length; else empty">
+        <app-histogram-chart
+          [histogramData]="histogram.data?.groupedData"
+          [groupingFilter]="this.selectedValue"
+        ></app-histogram-chart>
+      </ng-container>
+
+      <ng-template #empty>
+        <div class="histogram-chart-empty-state">
+          <img src="/assets/images/undraw_report.svg" alt="No data" />
+          <h2>No data available in the selected range</h2>
+          <p class="large-text mt-2">Please adjust the filters</p>
+        </div>
+      </ng-template>
+    </ng-template>
+
+    <ng-template #errorHistogramTmp let-histogram="view"></ng-template>
+
+    <ng-template #loaderHistogramTmp let-histogram="view">
+      <div class="chart-spinner-container">
+        <mat-spinner [diameter]="100"></mat-spinner>
+      </div>
+    </ng-template>
+  </section>
+
+  <section class="parts-per-country-section">
+    <h3 class="mb-4">Number of parts per country</h3>
+    <ng-container
+      *viewContainer="
+        assetsPerCountry$ | async;
+        main: mainPerCountryTmp;
+        error: errorPerCountryTmp;
+        loading: loaderPerCountryTmp
+      "
+    >
+    </ng-container>
+
+    <ng-template #mainPerCountryTmp let-v="view">
+      <div class="map-grid">
+        <section
+          class="map-chart-section"
+          [ngClass]="{
+            'full-space': v.data?.coordinates && !v.data?.coordinates.length
+          }"
+        >
+          <app-map [mapData]="v.data?.coordinates"></app-map>
+        </section>
+        <section class="map-list-section" *ngIf="v.data?.assetsPerPlant && v.data?.assetsPerPlant.length">
+          <app-organization-list [assetsPerPlant]="v.data?.assetsPerPlant"></app-organization-list>
+        </section>
+      </div>
+    </ng-template>
+
+    <ng-template #loaderPerCountryTmp let-v="view">
+      <div class="map-skeleton"></div>
+    </ng-template>
+
+    <ng-template #errorPerCountryTmp let-v="view">
+      <app-map [mapData]="[]"></app-map>
+    </ng-template>
+  </section>
+</div>

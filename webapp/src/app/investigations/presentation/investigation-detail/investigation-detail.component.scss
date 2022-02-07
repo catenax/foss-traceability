@@ -1,0 +1,110 @@
+/*!
+ * Copyright 2021 The PartChain Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.investigations-container {
+  @apply min-w-0 relative;
+  will-change: padding-right;
+  transition: padding-right 0.5s cubic-bezier(0.2, 0, 0, 1) 0s;
+}
+
+.expanded {
+  padding-right: 382px;
+}
+
+.not-expanded {
+  padding-right: 0;
+}
+
+.investigations-detail-container {
+  @apply flex flex-col;
+}
+
+.investigations-detail-header {
+  @apply grid grid-cols-12 gap-0;
+}
+
+.header-expanded {
+  @apply sm:col-span-5 lg:col-span-5;
+}
+
+.header-not-expanded {
+  @apply sm:col-span-7 lg:col-span-7;
+}
+
+.btn-container-expanded {
+  @apply sm:col-span-5 lg:col-span-5 sm:col-start-8 lg:col-start-8;
+}
+
+.btn-container-not-expanded {
+  @apply sm:col-span-3 lg:col-span-3 sm:col-start-10 lg:col-start-10;
+}
+
+.investigations-btn-content {
+  @apply flex justify-end;
+}
+
+.investigations-detail-content-grid {
+  @apply grid mt-4;
+}
+
+.table-section-expanded {
+  @apply sm:col-span-7 lg:col-span-7;
+}
+
+.table-section-not-expanded {
+  @apply sm:col-span-8 lg:col-span-8;
+}
+
+.table-content {
+  @apply flex flex-col gap-y-4 bg-white p-4 min-size;
+}
+
+.investigations-detail-summary-expanded {
+  @apply sm:col-span-5 lg:col-span-5;
+}
+
+.investigations-detail-summary-not-expanded {
+  @apply sm:col-span-4 lg:col-span-4;
+}
+
+.min-size {
+  min-height: 17rem;
+}
+
+.table-selection-container {
+  background-color: #e9ebf1;
+}
+
+.table-details {
+  @apply sm:col-span-4 md:col-span-4 lg:col-span-3;
+}
+
+.table-details__wrapper {
+  @apply fixed bg-white border-l-2 border-primary overflow-y-auto overflow-x-hidden;
+  animation: 0.5s ease-in-out 0s 1 slideInFromRight;
+  right: 0;
+  top: 6.5%;
+  min-width: 24rem;
+}
+
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

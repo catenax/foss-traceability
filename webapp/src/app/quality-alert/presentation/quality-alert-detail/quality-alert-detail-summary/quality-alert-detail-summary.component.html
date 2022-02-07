@@ -1,0 +1,87 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="bg-white p-4 min-size">
+  <header class="summary-header">
+    <h4>Quality alert details</h4>
+  </header>
+
+  <section class="mt-6">
+    <p class="small-text">Description</p>
+    <p class="regular-text mt-2" *ngIf="this.qualityAlert.description; else noDescription">
+      {{ this.qualityAlert.description }}
+    </p>
+    <ng-template #noDescription>
+      <p class="small-text mt-2 text-dustyGrayShadeAlto">
+        {{ 'No description provided' }}
+      </p>
+    </ng-template>
+  </section>
+
+  <section class="summary-second-section">
+    <div class="summary-second-section__col">
+      <p class="small-text">Requested by</p>
+      <span class="flex flex-row mt-2 items-center">
+        <app-avatar
+          [color]="qualityAlert.avatar.color"
+          [name]="qualityAlert.avatar.name"
+          [size]="'1.5rem'"
+        ></app-avatar>
+        <p class="regular-text py-0.5 px-1">{{ this.qualityAlert.originCompany }}</p>
+      </span>
+    </div>
+    <div class="summary-second-section__col">
+      <p class="small-text">Quality type</p>
+      <div
+        class="flex flex-row items-center gap-x-2 mt-0.5"
+        [ngClass]="{
+          'top-margin': this.qualityAlert.status !== 'pending'
+        }"
+      >
+        <svg-icon
+          [ngClass]="{
+            'text-success': this.qualityAlert.icon === 'checkbox-circle-line',
+            'text-error': this.qualityAlert.icon === 'spam-line',
+            'text-warning': this.qualityAlert.icon === 'error-warning-line',
+            'text-alert': this.qualityAlert.icon === 'alert-line',
+            'text-danger': this.qualityAlert.icon === 'close-circle-line'
+          }"
+          key="{{ this.qualityAlert.icon }}"
+          size="xs"
+        ></svg-icon>
+        <p class="regular-text">{{ this.qualityAlert.qualityType }}</p>
+
+        <span
+          *ngIf="this.qualityAlert.status === 'pending' || this.qualityAlert.status === 'created'"
+          class="flex justify-center items-center p-2 cursor-pointer"
+          (click)="this.emitChange(this.qualityAlert.alertId)"
+        >
+          <svg-icon size="xs" key="pencil-line"></svg-icon>
+        </span>
+      </div>
+    </div>
+    <div class="summary-second-section__col">
+      <div class="flex justify-end">
+        <section class="mr-2">
+          <p class="small-text">Requested date</p>
+          <p class="regular-text mt-2">
+            {{ this.qualityAlert.timestamp | appDateSplit }}
+          </p>
+        </section>
+      </div>
+    </div>
+  </section>
+</div>

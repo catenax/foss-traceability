@@ -1,0 +1,44 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div
+  class="assets-list-container"
+  [ngClass]="{
+    'not-expanded': !(this.selectedAsset$ | async),
+    expanded: this.selectedAsset$ | async
+  }"
+>
+  <app-header [title]="'Other parts'"></app-header>
+
+  <app-tabs (active)="this.getTab($event)">
+    <app-tab-item label="customer">
+      <app-tab-label>
+        <p class="large-text">Supplier parts</p>
+      </app-tab-label>
+      <app-tab-body>
+        <app-assets-list [queryType]="this.activeTab"></app-assets-list>
+      </app-tab-body>
+    </app-tab-item>
+    <app-tab-item label="supplier">
+      <app-tab-label>
+        <p class="large-text">Customer parts</p>
+      </app-tab-label>
+      <app-tab-body>
+        <app-assets-list [queryType]="this.activeTab"></app-assets-list>
+      </app-tab-body>
+    </app-tab-item>
+  </app-tabs>
+</div>

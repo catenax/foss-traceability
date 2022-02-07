@@ -1,0 +1,50 @@
+/*!
+ * Copyright 2021 The PartChain Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.create-header {
+  @apply flex flex-row justify-between p-2;
+}
+
+.create-divider {
+  @apply border-solid border-t-2 border-info;
+}
+
+.create-container {
+  @apply p-4 mt-2;
+}
+
+.form-field {
+  @apply w-full mt-4;
+}
+
+.description-section {
+  @apply mt-4;
+
+  &__field {
+    @apply w-full;
+  }
+}
+.btn-section {
+  @apply grid grid-cols-6 gap-2 mt-6;
+
+  &__btn-1 {
+    @apply col-start-3 col-span-2;
+  }
+
+  &__btn-2 {
+    @apply col-start-5 col-span-2;
+  }
+}

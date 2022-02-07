@@ -1,0 +1,40 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="quality-alert-container">
+  <header>
+    <h1>Quality Alerts</h1>
+  </header>
+
+  <ng-container *viewContainer="this.qualityAlerts$ | async; main: mainTmp; error: errorTmp; loading: loaderTmp">
+  </ng-container>
+
+  <ng-template #mainTmp let-alerts="view">
+    <app-quality-alert-list [qualityAlerts]="alerts.data"></app-quality-alert-list>
+  </ng-template>
+
+  <ng-template #errorTmp let-alerts="view">
+    <app-quality-alert-empty-state
+      [title]="'Something went wrong!'"
+      [imageUrl]="'/assets/images/undraw_server_down_s4lk.svg'"
+      [message]="'Sorry we cannot complete your request. Try again later.'"
+    ></app-quality-alert-empty-state>
+  </ng-template>
+
+  <ng-template #loaderTmp let-alerts="view">
+    <app-quality-alert-loading></app-quality-alert-loading>
+  </ng-template>
+</div>

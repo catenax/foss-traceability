@@ -3,8 +3,8 @@ name: Deploy to AWS
 on:
   push:
     branches: [ main ]
-  paths:
-    - laapi/*
+    paths:
+     - laapi/*
 
 jobs:
 

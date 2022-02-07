@@ -1,0 +1,68 @@
+/*!
+ * Copyright 2021 The PartChain Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.summary-header {
+  @apply flex flex-row justify-between;
+}
+
+.summary-first-section {
+  @apply grid grid-cols-5 gap-4 mt-6;
+
+  .summary-first-section-content {
+    @apply flex flex-col col-span-3;
+
+    &__creator-row {
+      @apply flex flex-row mt-2;
+    }
+
+    &__type {
+      @apply flex flex-col col-span-2;
+    }
+  }
+}
+
+.summary-second-section {
+  @apply flex justify-between mt-24;
+
+  &__col {
+    @apply flex flex-col;
+  }
+}
+
+.top-margin {
+  @apply mt-2;
+}
+
+.active {
+  fill: #3db014;
+}
+
+svg {
+  @apply mt-1;
+}
+
+.min-size {
+  min-height: 18rem;
+}
+
+p:empty {
+  width: 50px;
+  height: 12px;
+  animation: loading 1.7s infinite linear;
+  background: #dedfe1;
+  background-image: linear-gradient(to right, #dedfe1 0%, #f2f3f5 20%, #dedfe1 40%, #dedfe1 100%);
+  background-repeat: no-repeat;
+}

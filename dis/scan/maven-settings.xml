@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<settings>
+  <localRepository>/root/.m2/repository</localRepository>
+  <mirrors>
+    <mirror>
+      <id>proj-nexus</id>
+      <mirrorOf>*</mirrorOf>
+      <url>https://nexus.bmwgroup.net/repository/bmw_repositories/</url>
+    </mirror>
+  </mirrors>
+</settings>

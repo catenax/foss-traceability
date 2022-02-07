@@ -1,0 +1,272 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<aside [style.width.px]="sidebarWidth" class="sidebar">
+  <div class="sidebar-content">
+    <div
+      [style.width.px]="sidebarWidth"
+      class="scrollable"
+      [ngClass]="{
+        'padding-right': this.sidebarWidth === 240
+      }"
+    >
+      <ul class="sidebar-menu-container">
+        <li>
+          <section
+            class="sidebar-menu-container__item"
+            (click)="this.navigate('dashboard')"
+            [ngClass]="{
+              active: this.activeMenu === 'dashboard'
+            }"
+          >
+            <svg-icon class="mr-4" appTooltip [tooltip]="'Dashboard'" key="layout-masonry-line"> </svg-icon>
+            <p
+              class="regular-text"
+              [ngClass]="{
+                'item-active': this.activeMenu === 'dashboard',
+                disable: !this.expanded
+              }"
+            >
+              Dashboard
+            </p>
+          </section>
+        </li>
+        <li>
+          <section
+            class="sidebar-menu-container__item"
+            (click)="this.navigate('find')"
+            [ngClass]="{
+              active: this.activeMenu === 'find'
+            }"
+          >
+            <svg-icon class="mr-4" appTooltip [tooltip]="'Find Part'" key="search-line"> </svg-icon>
+            <p
+              class="regular-text"
+              [ngClass]="{
+                'item-active': this.activeMenu === 'find',
+                disable: !this.expanded
+              }"
+            >
+              Find Part
+            </p>
+          </section>
+        </li>
+        <li>
+          <section
+            class="sidebar-menu-container__item"
+            (click)="this.navigate('my-parts')"
+            [ngClass]="{
+              active: this.activeMenu === 'my-parts'
+            }"
+          >
+            <svg-icon
+              appTooltip
+              [tooltip]="this.ownLabel"
+              class="mr-4"
+              [ngClass]="{
+                'item-active': this.activeMenu === 'my-parts'
+              }"
+              key="car"
+            ></svg-icon>
+            <p
+              class="regular-text"
+              [ngClass]="{
+                active: this.activeMenu === 'my-parts',
+                disable: !this.expanded
+              }"
+            >
+              {{ this.ownLabel }}
+            </p>
+          </section>
+        </li>
+        <li>
+          <section
+            class="sidebar-menu-container__item"
+            (click)="this.navigate('supplier-parts')"
+            [ngClass]="{
+              active: this.activeMenu === 'supplier-parts'
+            }"
+          >
+            <svg-icon appTooltip [tooltip]="this.otherLabel" class="mr-4" key="car-components-2"></svg-icon>
+            <p
+              class="regular-text"
+              [ngClass]="{
+                active: this.activeMenu === 'supplier-parts',
+                disable: !this.expanded
+              }"
+            >
+              {{ this.otherLabel }}
+            </p>
+          </section>
+        </li>
+        <li>
+          <section
+            *appHasRole="['admin', 'quality_manager']"
+            class="sidebar-menu-container__item"
+            (click)="this.navigate('quality-alert')"
+            [ngClass]="{
+              active: this.activeMenu === 'quality-alert'
+            }"
+          >
+            <svg-icon
+              [ngClass]="{
+                'margin-right': this.sidebarWidth === 240
+              }"
+              appTooltip
+              [tooltip]="'Quality Alert'"
+              key="alarm-warning-line"
+            >
+            </svg-icon>
+            <p
+              class="regular-text"
+              [ngClass]="{
+                active: this.activeMenu === 'quality-alert',
+                disable: !this.expanded
+              }"
+            >
+              Quality Alert
+            </p>
+            <ng-container *ngIf="this.qualityAlertsBadge$ | async as qualityAlertBadge">
+              <div
+                class="sidebar-menu-container__item__badge"
+                [hidden]="qualityAlertBadge === 0"
+                *ngIf="qualityAlertBadge <= 99; else greater"
+              >
+                <p class="small-text text-white">
+                  {{ qualityAlertBadge }}
+                </p>
+              </div>
+            </ng-container>
+          </section>
+        </li>
+        <li>
+          <section
+            *appHasRole="['admin', 'quality_manager']"
+            class="sidebar-menu-container__item"
+            (click)="this.navigate('investigations')"
+            [ngClass]="{
+              active: this.activeMenu === 'investigations'
+            }"
+          >
+            <svg-icon class="mr-4" appTooltip [tooltip]="'Quality investigations'" key="file-search-line"> </svg-icon>
+            <p
+              class="regular-text"
+              [ngClass]="{
+                'item-active': this.activeMenu === 'investigations',
+                disable: !this.expanded
+              }"
+            >
+              Quality investigations
+            </p>
+            <ng-container *ngIf="this.qualityInvestigationsBadge$ | async as qualityInvestigationsBadge">
+              <div
+                class="sidebar-menu-container__item__badge"
+                [hidden]="qualityInvestigationsBadge === 0"
+                *ngIf="qualityInvestigationsBadge <= 99; else greater"
+              >
+                <p class="small-text text-white">
+                  {{ qualityInvestigationsBadge }}
+                </p>
+              </div>
+            </ng-container>
+          </section>
+        </li>
+        <li>
+          <section
+            *appHasRole="['admin']"
+            class="sidebar-menu-container__item"
+            (click)="this.navigate('acl')"
+            [ngClass]="{
+              active: this.activeMenu === 'acl'
+            }"
+          >
+            <svg-icon
+              appTooltip
+              [tooltip]="'Access Control List'"
+              class="mr-4"
+              [ngClass]="{
+                'item-active': this.activeMenu === 'acl'
+              }"
+              key="admin-line"
+            ></svg-icon>
+            <p
+              class="regular-text"
+              [ngClass]="{
+                active: this.activeMenu === 'acl',
+                disable: !this.expanded
+              }"
+            >
+              Access Control List
+            </p>
+            <ng-container *ngIf="this.aclBadge$ | async as aclBadge">
+              <div
+                class="sidebar-menu-container__item__badge"
+                [hidden]="aclBadge === 0"
+                *ngIf="aclBadge <= 99; else greater"
+              >
+                <p class="component-headline text-white">
+                  {{ aclBadge }}
+                </p>
+              </div>
+            </ng-container>
+          </section>
+        </li>
+      </ul>
+    </div>
+    <div class="flex-auto"></div>
+    <div
+      [style.width.px]="sidebarWidth"
+      class="scrollable"
+      [ngClass]="{
+        'padding-right': this.sidebarWidth === 240
+      }"
+    >
+      <ul class="sidebar-menu-container">
+        <li>
+          <section
+            class="sidebar-menu-container__item"
+            (click)="this.navigate('about')"
+            [ngClass]="{
+              active: this.activeMenu === 'about'
+            }"
+          >
+            <svg-icon
+              appTooltip
+              [tooltip]="'About'"
+              class="mr-4"
+              [ngClass]="{
+                'item-active': this.activeMenu === 'about'
+              }"
+              key="information-line"
+            ></svg-icon>
+            <p
+              class="regular-text"
+              [ngClass]="{
+                active: this.activeMenu === 'about',
+                disable: !this.expanded
+              }"
+            >
+              About
+            </p>
+          </section>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <ng-template #greater>
+    <span class="component-headline-small sidebar-menu-container__item__badge text-white">+99 </span>
+  </ng-template>
+</aside>

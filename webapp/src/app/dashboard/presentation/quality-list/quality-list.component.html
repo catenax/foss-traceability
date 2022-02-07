@@ -1,0 +1,84 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<section class="quality-list-section" *ngIf="this.topFiveAlerts.length; else emptyState">
+  <div class="mt-1" *ngFor="let qualityAlert of this.topFiveAlerts">
+    <div class="quality-list-container" [ngClass]="this.getCardCssClass(qualityAlert)">
+      <div class="quality-list-card">
+        <div class="quality-list-card__icon" *ngIf="!this.isInvestigation">
+          <svg-icon
+            [ngStyle]="{ color: this.getIconColor(qualityAlert.qualityType) }"
+            key="{{ qualityAlert.icon }}"
+            size="sm"
+          ></svg-icon>
+        </div>
+        <p class="regular-text quality-list-card__label">
+          {{ this.getCardLabel(qualityAlert) }}
+        </p>
+      </div>
+
+      <div class="quality-list-card__actions">
+        <p class="regular-text quality-list-card__actions__label">
+          {{ qualityAlert.date | appDateSplit }}
+        </p>
+        <span class="quality-list-card__actions__icon" (click)="this.emitNavigation(qualityAlert.alertId)">
+          <svg-icon size="sm" key="eye-line" color="#5b708f" appTooltip [tooltip]="'View details'"></svg-icon>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="quality-list-footer" *ngIf="!this.isEmpty(this.remainingAlerts)">
+  <div class="quality-list-remaining-alerts" *ngIf="!this.isInvestigation; else investigations">
+    <p class="regular-text">More new alerts:</p>
+    <span
+      class="quality-list-remaining-alerts__items"
+      *ngFor="let alert of this.remainingAlerts | keyvalue: keepOriginalOrder"
+    >
+      <svg-icon
+        [ngStyle]="{ color: alert.value === '0' ? '#acbcd7' : this.getIconColor(alert.key) }"
+        key="{{ this.getIcon(alert) }}"
+        size="xs"
+      ></svg-icon>
+      <p
+        class="regular-text quality-list-remaining-alerts__items__label"
+        [ngClass]="{
+          'font-bold': alert.value !== '0'
+        }"
+      >
+        {{ alert.value }}
+      </p>
+    </span>
+  </div>
+
+  <ng-template #investigations>
+    <div class="quality-list-remaining-alerts" *ngIf="!this.isEmpty(this.remainingAlerts)">
+      <p class="regular-text">More investigations:</p>
+      <p class="regular-text font-bold">{{ this.remainingAlerts['QUESTIONABLE'] }}</p>
+    </div>
+  </ng-template>
+</div>
+
+<ng-template #emptyState>
+  <div class="quality-list-empty-state">
+    <app-quality-alert-empty-state
+      [title]="'Great news'"
+      [message]="this.emptyStateLabel()"
+      [imageUrl]="'/assets/images/relax.svg'"
+    ></app-quality-alert-empty-state>
+  </div>
+</ng-template>

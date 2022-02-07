@@ -1,0 +1,145 @@
+.modal-header {
+  @apply flex flex-row justify-between p-2;
+
+  &__title {
+    @apply align-middle;
+  }
+
+  &__close-icon {
+    @apply text-tundora cursor-pointer mt-1;
+  }
+}
+
+.divider {
+  @apply border-solid border-t-2 border-info;
+}
+
+.raised-form {
+  @apply grid grid-cols-2 gap-1;
+
+  &__type-field {
+    @apply col-start-1 col-span-1;
+  }
+
+  &__description-field {
+    @apply col-span-2;
+  }
+}
+
+.modal-content {
+  @apply p-4 mt-2 overflow-y-scroll;
+}
+
+.screen-height {
+  height: calc(100vh - 3.5rem);
+}
+
+.related-parts-container {
+  @apply col-span-2 shadow-md bg-white mt-4 p-4;
+}
+
+.related-parts-content {
+  @apply flex flex-col gap-y-6;
+
+  &__title {
+    @apply flex items-center;
+
+    &__icon {
+      @apply flex justify-center items-center py-2 cursor-pointer;
+    }
+  }
+}
+
+.calendar-container {
+  @apply w-full relative;
+
+  &__input {
+    @apply font-regular text-base cursor-pointer font-normal border-b border-primary border-solid;
+    width: 23%;
+
+    &:focus {
+      @apply outline-none border-b-2 border-primary border-solid;
+    }
+  }
+
+  &__icon {
+    @apply pointer-events-none absolute;
+    left: 20%;
+    bottom: 5%;
+  }
+}
+
+.table-selection {
+  @apply flex items-center p-4;
+  background-color: #e9ebf1;
+}
+
+.btn-section {
+  @apply grid grid-cols-12 gap-2 mt-6;
+
+  &__btn-1 {
+    @apply col-start-9 col-span-2;
+  }
+
+  &__btn-2 {
+    @apply col-start-11 col-span-2;
+  }
+}
+
+.centered-content {
+  @apply flex justify-center;
+}
+
+.fade-in {
+  -webkit-animation: fade-in 0.25s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+  animation: fade-in 0.25s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+}
+
+.fade-out {
+  -webkit-animation: fade-in 0.2s cubic-bezier(1, 0.565, 0.575, 0.39) both;
+  animation: fade-in 0.2s cubic-bezier(1, 0.565, 0.575, 0.39) both;
+}
+
+/**
+ * ----------------------------------------
+ * animation fade-in
+ * ----------------------------------------
+ */
+@-webkit-keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/**
+ * ----------------------------------------
+ * animation fade-in
+ * ----------------------------------------
+ */
+@-webkit-keyframes fade-out {
+  100% {
+    opacity: 1;
+  }
+  0% {
+    opacity: 0;
+  }
+}
+@keyframes fade-out {
+  100% {
+    opacity: 1;
+  }
+  0% {
+    opacity: 0;
+  }
+}

@@ -1,0 +1,130 @@
+<header class="modal-header">
+  <h4 class="modal-header__title">
+    Raise quality type
+  </h4>
+  <svg-icon key="close-fill" size="sm" class="modal-header__close-icon" (click)="dialogClose()"> </svg-icon>
+</header>
+<mat-divider class="divider"></mat-divider>
+<div
+  class="modal-content"
+  [ngClass]="{
+    'screen-height': (this.raisedParts$ | async) && this.isExpanded
+  }"
+>
+  <form [formGroup]="this.raiseForm" class="raised-form">
+    <p class="small-text">Please choose a new quality status for the parts and add a description</p>
+    <mat-form-field class="raised-form__type-field" appearance="fill">
+      <mat-label>Quality type</mat-label>
+      <mat-select formControlName="type" required>
+        <mat-option *ngFor="let type of types; let i = index" [value]="type">
+          {{ type }}
+        </mat-option>
+      </mat-select>
+      <mat-error class="regular-text" *ngIf="this.raiseForm.get('type').hasError('required')"
+        >You must select a value</mat-error
+      >
+    </mat-form-field>
+    <mat-form-field class="col-span-2">
+      <mat-label class="small-text">Description</mat-label>
+      <textarea matInput formControlName="description" class="regular-text" rows="4" cols="30"></textarea>
+    </mat-form-field>
+  </form>
+
+  <section class="related-parts-container">
+    <div class="related-parts-content">
+      <div class="related-parts-content__title">
+        <span class="related-parts-content__title__icon" (click)="this.isExpanded = !this.isExpanded">
+          <svg-icon class="mt-0.5" key="arrow-down-s-line" size="sm"></svg-icon>
+        </span>
+        <h4 class="ml-4">Related parts found outside the investigation</h4>
+      </div>
+
+      <div
+        *ngIf="this.isExpanded"
+        [ngClass]="{
+          'fade-in': this.isExpanded,
+          'fade-out': !this.isExpanded
+        }"
+        class="related-parts-content"
+      >
+        <div class="calendar-container">
+          <p class="small-text">Production date</p>
+          <input
+            class="calendar-container__input"
+            type="text"
+            ngxDaterangepickerMd
+            [(ngModel)]="this.selected"
+            [showCustomRangeLabel]="true"
+            [alwaysShowCalendars]="true"
+            [ranges]="this.ranges"
+            [linkedCalendars]="true"
+            [placeholder]="'--/--/----  --/--/----'"
+            [drops]="'down'"
+            [opens]="'right'"
+            [locale]="this.locale"
+            [autoApply]="true"
+            (ngModelChange)="this.setDates($event)"
+          />
+          <svg-icon size="sm" class="calendar-container__icon" key="calendar-line"></svg-icon>
+        </div>
+
+        <div class="table-selection" *ngIf="this.selectedRows && this.selectedRows.length">
+          <p class="regular-text">
+            {{ this.selectedRows.length }} related part<ng-container *ngIf="this.selectedRows.length > 1"
+              >s</ng-container
+            >
+            will be added to the quality alert.
+          </p>
+        </div>
+
+        <ng-container *viewContainer="this.raisedParts$ | async; main: mainTmp; error: errorTmp; loading: loaderTmp">
+        </ng-container>
+
+        <ng-template #mainTmp let-raised="view">
+          <div class="shadow">
+            <app-table
+              [dataSet]="raised.data"
+              [tableConfiguration]="this.partsTable"
+              [clickableRows]="true"
+              [isChildClickable]="true"
+              [stickyHeader]="false"
+              [multiColorRow]="true"
+              [pageSize]="5"
+              [pageSizeOptions]="[5, 10, 15]"
+              (tableSelection)="this.getSelectedRows($event)"
+            >
+            </app-table>
+          </div>
+        </ng-template>
+
+        <ng-template #loaderTmp let-raised="view">
+          <div class="centered-content">
+            <mat-progress-spinner diameter="95" mode="indeterminate"> </mat-progress-spinner>
+          </div>
+        </ng-template>
+
+        <ng-template #errorTmp let-raised="view">
+          <div class="centered-content">
+            <img src="/assets/images/undraw_server_down_s4lk.svg" alt="No data" />
+            <h2>Something went wrong!</h2>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </section>
+  <section class="btn-section">
+    <app-button class="btn-section__btn-1" [type]="'submit'" [button]="'secondary'" (clickEvent)="this.dialogClose()"
+      >Cancel</app-button
+    >
+    <app-button
+      appTooltip
+      [tooltip]="'For this change to happen, it needs to be distributed in the quality investigation area'"
+      class="btn-section__btn-2"
+      [type]="'submit'"
+      [button]="'primary'"
+      [disable]="this.raiseForm.get('type').hasError('required')"
+      (clickEvent)="this.addToQueue()"
+      >Save</app-button
+    >
+  </section>
+</div>

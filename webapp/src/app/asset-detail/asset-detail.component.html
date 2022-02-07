@@ -1,0 +1,227 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<ng-container *viewContainer="this.asset$ | async; main: mainTmp; error: errorTmp; loading: loaderTmp"> </ng-container>
+
+<ng-template #mainTmp let-asset="view">
+  <div class="asset-detail-container" *ngIf="!this.isEmpty(asset.data); else errorTmp">
+    <header class="asset-detail-header">
+      <h1 *ngIf="asset.data; else empty">{{ asset.data?.partNameManufacturer }}</h1>
+      <ng-template #empty>
+        <p></p>
+      </ng-template>
+      <ng-container *ngIf="this.isAllowedToEditQualityAlert(asset.data); else noVisibilityOfOtherLayers">
+        <svg-icon
+          *ngIf="asset.data?.partIcon"
+          size="sm"
+          key="{{ asset.data?.partIcon }}"
+          appTooltip
+          [tooltip]="asset.data?.partsAvailable"
+        ></svg-icon>
+      </ng-container>
+      <ng-template #noVisibilityOfOtherLayers>
+        <svg-icon size="sm" key="ic-all-parts-available" appTooltip [tooltip]="'All child parts available'"></svg-icon>
+      </ng-template>
+    </header>
+
+    <div class="asset-detail-grid">
+      <section class="asset-detail-overview-section">
+        <h5>Overview</h5>
+        <div class="asset-detail-overview-list-items mt-4">
+          <div class="asset-detail-item">
+            <p class="small-text">Production status</p>
+            <p *ngIf="asset.data?.status; else emptyLabel">{{ asset.data?.status }}</p>
+          </div>
+          <div class="asset-detail-item">
+            <p class="small-text">Production date</p>
+            <p>{{ asset.data?.productionDateGmt | appAssetDate }}</p>
+          </div>
+          <div class="asset-detail-item">
+            <p class="small-text">Quality type</p>
+            <div class="asset-detail-item__quality-type">
+              <svg-icon
+                *ngIf="asset.data?.icon"
+                size="xs"
+                [ngClass]="{
+                  'text-success': asset.data?.icon === 'checkbox-circle-line',
+                  'text-error': asset.data?.icon === 'spam-line',
+                  'text-warning': asset.data?.icon === 'error-warning-line',
+                  'text-alert': asset.data?.icon === 'alert-line',
+                  'text-danger': asset.data?.icon === 'close-circle-line'
+                }"
+                key="{{ asset.data?.icon }}"
+              ></svg-icon>
+              <p>{{ asset.data?.qualityType }}</p>
+              <svg-icon
+                *ngIf="asset.data && this.isAllowedToEditQualityAlert(asset.data)"
+                size="xs"
+                key="pencil-line"
+                class="ml-6 cursor-pointer"
+                (click)="this.openModal(asset.data)"
+              ></svg-icon>
+            </div>
+          </div>
+
+          <div class="asset-detail-item">
+            <p class="small-text">Serial number type</p>
+            <p>{{ asset.data?.serialNumberType }}</p>
+          </div>
+          <div class="asset-detail-item">
+            <p class="small-text">Parents</p>
+            <ng-container *ngIf="asset.data?.parents as parent">
+              <a *ngIf="parent.length; else noParent" class="text-base uppercase" (click)="this.setAsset(parent[0])">{{
+                parent[0].partNameManufacturer
+              }}</a>
+            </ng-container>
+            <ng-template #noParent>
+              <p class="regular-text">
+                -
+              </p>
+            </ng-template>
+          </div>
+        </div>
+      </section>
+
+      <section class="asset-detail-overall-sections">
+        <div class="asset-detail-overall-list-items">
+          <h5>Manufacturer data</h5>
+          <div class="asset-detail-item">
+            <p class="small-text">Manufacturer</p>
+            <p>{{ asset.data?.businesspartnername }}</p>
+          </div>
+
+          <div class="asset-detail-item">
+            <p class="small-text">Part number</p>
+            <p>{{ asset.data?.partNumberManufacturer }}</p>
+          </div>
+
+          <div class="asset-detail-item">
+            <p class="small-text">Part name</p>
+            <p>{{ asset.data?.partNameManufacturer }}</p>
+          </div>
+
+          <div class="asset-detail-item">
+            <p class="small-text">Serial number</p>
+            <div class="asset-detail-clipboard">
+              <p>{{ asset.data?.serialNumberManufacturer }}</p>
+              <svg-icon
+                class="cursor-pointer"
+                key="file-copy-line"
+                size="xs"
+                (click)="this.copyToClipboard(asset.data?.serialNumberManufacturer)"
+              >
+              </svg-icon>
+            </div>
+          </div>
+
+          <div class="asset-detail-item">
+            <p class="small-text">Plant</p>
+            <p *ngIf="asset.data?.manufacturerPlant; else emptyLabel">{{ asset.data?.manufacturerPlant }}</p>
+          </div>
+
+          <div class="asset-detail-item">
+            <p class="small-text">Line</p>
+            <p *ngIf="asset.data?.manufacturerLine; else emptyLabel">{{ asset.data?.manufacturerLine }}</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="asset-detail-overall-sections">
+        <div class="asset-detail-overall-list-items">
+          <h5>Customer data</h5>
+          <div class="asset-detail-item">
+            <p class="small-text">Customer</p>
+            <p *ngIf="asset.data?.customerpartnername; else emptyLabel">{{ asset.data?.customerpartnername }}</p>
+          </div>
+
+          <div class="asset-detail-item">
+            <p class="small-text">Part number</p>
+            <p>{{ asset.data?.partNumberCustomer }}</p>
+          </div>
+
+          <div class="asset-detail-item">
+            <p class="small-text">Serial number</p>
+            <div class="asset-detail-clipboard ">
+              <p>{{ asset.data?.serialNumberCustomer }}</p>
+              <svg-icon
+                class="cursor-pointer"
+                key="file-copy-line"
+                size="xs"
+                (click)="this.copyToClipboard(asset.data?.serialNumberCustomer)"
+              >
+              </svg-icon>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="asset-detail-child-section" *ngIf="asset.data?.childComponents.length">
+        <header #header class="asset-detail-child-header">
+          <svg-icon
+            class="cursor-pointer"
+            key="{{ this.getExpandedIcon() }}"
+            size="sm"
+            (click)="this.isChildComponentExpanded = !this.isChildComponentExpanded"
+          >
+          </svg-icon>
+          <h5>Child parts ({{ asset.data?.childComponents.length }})</h5>
+        </header>
+        <div
+          class="asset-detail-child-grid"
+          *ngIf="this.isChildComponentExpanded"
+          [ngClass]="{
+            'fade-in': this.isChildComponentExpanded,
+            'fade-out': !this.isChildComponentExpanded
+          }"
+        >
+          <div class="asset-detail-child-grid__flex" *ngFor="let child of asset.data?.childComponents">
+            <svg-icon size="sm" key="settings-line"></svg-icon>
+            <div class="asset-detail-child-grid__flex__col">
+              <a
+                *ngIf="child.partNameManufacturer !== 'Missing part'; else missing"
+                class="text-sm"
+                (click)="this.setAsset(child)"
+                >{{ child.partNameManufacturer }}</a
+              >
+              <p class="small-text">SN: {{ child.serialNumberCustomer }}</p>
+              <ng-template #missing>
+                <p class="small-text missing-link">{{ child.partNameManufacturer }}</p>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <ng-template #emptyLabel>
+    <p>
+      -
+    </p>
+  </ng-template>
+</ng-template>
+
+<ng-template #loaderTmp let-asset="view">
+  <app-asset-detail-skeleton></app-asset-detail-skeleton>
+</ng-template>
+
+<ng-template #errorTmp let-asset="view">
+  <section class="asset-detail-empty-state">
+    <img src="/assets/images/no_data_illustration.svg" alt="No data" />
+    <h2 class="mt-6">The selected part was not found</h2>
+    <p class="large-text">Please try to search for a serial number within PartChain</p>
+  </section>
+</ng-template>

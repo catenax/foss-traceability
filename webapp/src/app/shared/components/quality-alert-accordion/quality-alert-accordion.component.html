@@ -1,0 +1,232 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<header class="alert-header">
+  <h2 class="alert-header__title">{{ this.title }}</h2>
+  <div class="alert-btn-container">
+    <section class="alert-btn-container__btn-content" *ngIf="this.hasActions">
+      <app-button
+        class="mr-4"
+        [type]="'submit'"
+        [button]="'secondary'"
+        [icon]="'delete-bin-line'"
+        (clickEvent)="this.discard('multiple')"
+        [disable]="this.qualityAlerts.length === 0"
+        >Discard all</app-button
+      >
+      <app-button
+        [type]="'submit'"
+        [button]="'primary'"
+        [icon]="'share-line'"
+        (clickEvent)="this.commitAll()"
+        [disable]="this.qualityAlerts.length === 0"
+        >Distribute all</app-button
+      >
+    </section>
+    <section class="alert-btn-container__btn-content" *ngIf="this.distributedFilterItems">
+      <form [formGroup]="this.qualityTypeForm">
+        <mat-form-field>
+          <mat-select formControlName="type" required>
+            <mat-option *ngFor="let type of this.distributedFilterItems; let i = index" [value]="type">
+              {{ type }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+    </section>
+  </div>
+</header>
+
+<div
+  [ngClass]="{
+    'accordion-not-received-margin': this.view !== 'raised',
+    'accordion-received-margin': this.view === 'raised'
+  }"
+  *ngIf="this.filteredQualityAlerts && this.filteredQualityAlerts.length > 0; else emptyState"
+>
+  <div *ngFor="let item of this.filteredQualityAlerts; let i = index">
+    <div
+      #accordion
+      class="accordion"
+      [ngClass]="{
+        expanded: !item.isActive,
+        'not-expanded': item.isActive,
+        'item-shadow': this.applyShadow
+      }"
+    >
+      <section class="flex flex-row items-center justify-center">
+        <span class="flex justify-center items-center p-2 cursor-pointer" (click)="toggleAccordion($event, i, item)">
+          <svg-icon
+            class="mt-0.5"
+            key="{{ item.isActive ? 'arrow-up-s-line' : 'arrow-down-s-line' }}"
+            size="sm"
+          ></svg-icon>
+        </span>
+
+        <div class="mx-4 flex flex-row items-center justify-center">
+          <div *ngIf="item.type !== 'Received'" class="flex flex-row items-center justify-center">
+            <svg-icon
+              [ngClass]="{
+                'text-success': item.previousIcon === 'checkbox-circle-line',
+                'text-error': item.previousIcon === 'spam-line',
+                'text-warning': item.previousIcon === 'error-warning-line',
+                'text-alert': item.previousIcon === 'alert-line',
+                'text-danger': item.previousIcon === 'close-circle-line'
+              }"
+              key="{{ item.previousIcon }}"
+              size="sm"
+            ></svg-icon>
+            <svg-icon key="arrow-right-line" class="text-dark px-1"></svg-icon>
+          </div>
+
+          <svg-icon
+            [ngClass]="{
+              'text-success': item.icon === 'checkbox-circle-line',
+              'text-error': item.icon === 'spam-line',
+              'text-warning': item.icon === 'error-warning-line',
+              'text-alert': item.icon === 'alert-line',
+              'text-danger': item.icon === 'close-circle-line'
+            }"
+            key="{{ item.icon }}"
+            size="sm"
+          ></svg-icon>
+        </div>
+        <p class="regular-text p-0.5" *ngIf="item.type === 'Received'; else raised">
+          <strong>
+            {{ item.numberOfParts }} part<ng-container *ngIf="item.numberOfParts !== 1">s</ng-container>
+          </strong>
+          affected due to <strong>{{ item.qualityType }} issue</strong> on {{ item.originCompany }} parts
+        </p>
+        <ng-template #raised>
+          <p class="regular-text p-0.5">
+            {{ item.numberOfParts }} part<ng-container *ngIf="item.numberOfParts !== 1">s</ng-container> changed from
+            <strong>{{ item.previousQualityType }}</strong> to
+            <strong>{{ item.qualityType }}</strong>
+          </p>
+        </ng-template>
+      </section>
+      <section class="flex justify-between items-center" (click)="$event.stopPropagation()">
+        <p
+          class="regular-text p-1"
+          [ngClass]="{
+            'timestamp-margin': this.hasActions,
+            'timestamp-no-margin': !this.hasActions
+          }"
+        >
+          {{ item.timestamp | appDateSplit }}
+        </p>
+        <ng-container class="flex justify-around">
+          <section class="flex flex-row justify-between items-center ml-10">
+            <span
+              *ngIf="item.control && item.control === 'write'; else read"
+              [ngClass]="{
+                selected: this.activeIndex === i && this.isExpanded
+              }"
+              class="flex justify-center items-center p-2 cursor-pointer mr-2.5"
+              (click)="this.expand($event, i)"
+              id="investigation-menu"
+              aria-haspopup="true"
+            >
+              <svg-icon size="sm" key="more-line"></svg-icon>
+            </span>
+            <ng-template #read>
+              <span
+                class="flex justify-center items-center p-2 cursor-pointer mr-2.5"
+                (click)="this.viewDetails(item.alertId)"
+              >
+                <svg-icon size="sm" key="eye-line" color="#5b708f" appTooltip [tooltip]="'View details'"></svg-icon>
+              </span>
+            </ng-template>
+          </section>
+
+          <div
+            [ngClass]="{
+              'fade-in': this.isExpanded,
+              'fade-out': !this.isExpanded
+            }"
+            class="menu"
+            *ngIf="this.isExpanded"
+            role="menu"
+            aria-orientation="vertical"
+            aria-labelledby="menu"
+            [style.top]="this.menuPositionY"
+          >
+            <section class="hover:bg-dustyGrayShadeGallery p-1 cursor-pointer" (click)="this.viewDetails()">
+              <div class="flex flex-row items-center space-x-1">
+                <span class="flex justify-center items-center cursor-pointer mr-2.5 p-2">
+                  <svg-icon size="xs" key="eye-line"></svg-icon>
+                </span>
+                <p class="small-text">View details</p>
+              </div>
+            </section>
+
+            <section class="hover:bg-dustyGrayShadeGallery p-1 cursor-pointer" (click)="this.commitOne()">
+              <div class="flex flex-row items-center space-x-1">
+                <span class="flex justify-center items-center p-2 cursor-pointer mr-2.5">
+                  <svg-icon size="xs" key="share-line"></svg-icon>
+                </span>
+                <p class="small-text">Distribute to customers</p>
+              </div>
+            </section>
+
+            <section class="hover:bg-dustyGrayShadeGallery p-1 cursor-pointer" (click)="this.discard('single')">
+              <div class="flex flex-row items-center space-x-1">
+                <span class="flex justify-center items-center p-2 cursor-pointer mr-2.5">
+                  <svg-icon size="xs" key="delete-bin-line"></svg-icon>
+                </span>
+                <p class="small-text">Discard</p>
+              </div>
+            </section>
+          </div>
+        </ng-container>
+      </section>
+    </div>
+    <div
+      class="panel"
+      [ngClass]="{
+        expanded: item.isActive,
+        'not-expanded': !item.isActive
+      }"
+      hide="!item.isActive"
+    >
+      <div class="m-4 shadow-lg">
+        <app-table
+          [dataSet]="item.children"
+          [tableConfiguration]="item.table"
+          [multiColorRow]="true"
+          [clickableRows]="false"
+        ></app-table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="this.hasPagination && this.filteredQualityAlerts.length">
+  <mat-paginator
+    [length]="this.pageLength"
+    [pageSize]="this.pageSize"
+    [hidePageSize]="true"
+    (page)="this.pageChangeEvent($event)"
+  ></mat-paginator>
+</ng-container>
+
+<ng-template #emptyState>
+  <app-quality-alert-empty-state
+    [title]="this.emptyStateTitle"
+    [message]="this.emptyStateLabel"
+    [imageUrl]="this.emptyStateImage"
+  ></app-quality-alert-empty-state>
+</ng-template>

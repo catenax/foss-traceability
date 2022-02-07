@@ -1,0 +1,296 @@
+### Authentication
+POST https://auth.test.catenax.partchain.dev/auth/realms/bmw/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id=ui&username=bmwadmin&password=CatenaX123&client_secret=b1803d6e-9902-4143-9f47-50dc331ff8dd
+
+> {% client.global.set("auth_token", response.body.access_token); %}
+
+### Asset post 200
+POST http://localhost:8080/api/asset
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "staticData": {
+    "customerContractOneID": "CAXLTHAJNAHZYGZZ",
+    "customerOneID": "CAXSJRTGOPVESYZZ",
+    "manufactureContractOneID": "CAXLBRHHQAJAIOZZ",
+    "manufacturerOneID": "CAXLBRHHQAJAIOZZ",
+    "partNameCustomer": "PA6 GF40",
+    "partNameManufacturer": "PA6 GF40",
+    "partNumberCustomer": "12324",
+    "partNumberManufacturer": "12324"
+  },
+  "uniqueData": {
+    "customerUniqueID": "nrawssgvbcvvlpofiadnvliigjqvpdmflelinhxztdntcxldftqoexlracaslqdd",
+    "manufacturerUniqueID": "edkszvnbfhkhnejsrfvpwwrrcvgftszcphiyyluwgxpclebgdthwvlxahkhjwlog",
+    "uniqueID": "gwvejdnetrjnffsrqrgsjlrlgwintatnxbltrifnrcebkjadxdieyuryyfytqntr"
+  },
+  "individualData": {
+    "productionCountryCode": "DE",
+    "productionDateGMT": "2021-10-01T03:41:24.406+02:00"
+  },
+  "supplierTree": {
+    "isParentOf": []
+  },
+  "partTree": {
+    "isParentOf": []
+  },
+  "qualityAlertData": null
+}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+%}
+
+<> 2022-01-10T164242.400.json
+<> 2022-01-10T164104.500.json
+
+### Asset post 400
+POST http://localhost:8080/api/asset
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "staticData": {
+    "customerContractOneID": "CAXLTHAJNAHZYGZZ",
+    "customerOneID": "CAXSJRTGOPVESYZZ",
+    "manufactureContractOneID": "CAXLBRHHQAJAIOZZ",
+    "manufacturerOneID": "CAXLBRHHQAJAIOZZ",
+    "partNameCustomer": "PA6 GF40",
+    "partNameManufacturer": "PA6 GF40",
+    "partNumberCustomer": "12324",
+    "partNumberManufacturer": "12324"
+  },
+  "uniqueData": {
+    "customerUniqueID": "nrawssgvbcvvlpofiadnvliigjqvpdmflelinhxztdntcxldftqoexlracaslqdd",
+    "uniqueID": "gwvejdnetrjnffsrqrgsjlrlgwintatnxbltrifnrcebkjadxdieyuryyfytqntr"
+  },
+  "individualData": {
+    "productionCountryCode": "DE",
+    "productionDateGMT": "2021-10-01T03:41:24.406+02:00"
+  },
+  "supplierTree": {
+    "isParentOf": []
+  },
+  "partTree": {
+    "isParentOf": []
+  },
+  "qualityAlertData": null
+}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 400, "Response status is not 400 ("+response.status+" instead)");
+});
+%}
+
+### Asset Bulk POST
+POST http://localhost:8080/api/asset/bulk
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+[
+  {
+    "staticData": {
+      "customerContractOneID": "CAXLTHAJNAHZYGZZ",
+      "customerOneID": "CAXSJRTGOPVESYZZ",
+      "manufactureContractOneID": "CAXLBRHHQAJAIOZZ",
+      "manufacturerOneID": "CAXLBRHHQAJAIOZZ",
+      "partNameCustomer": "PA6 GF40",
+      "partNameManufacturer": "PA6 GF40",
+      "partNumberCustomer": "12324",
+      "partNumberManufacturer": "12324"
+    },
+    "uniqueData": {
+      "customerUniqueID": "drpexidvhivjkojjmxvklwefjrekobbisdzvavgsjssywvqriuibkwulbzejyuea",
+      "manufacturerUniqueID": "tmpxogyfezhlxvynpvacthfqmssskpdaouzytomyscnleclyqhpuclxafpadpcxy",
+      "uniqueID": "ichuvaktlnzgnievmwlkkrtiomnmxqkjobmdvzvygbglwlmfqjcxefpxlqzjpvgw"
+    },
+    "individualData": {
+      "productionCountryCode": "DE",
+      "productionDateGMT": "2021-10-01T03:41:24.867+02:00"
+    },
+    "supplierTree": {
+      "isParentOf": []
+    },
+    "partTree": {
+      "isParentOf": []
+    },
+    "qualityAlertData": null
+  },
+  {
+    "staticData": {
+      "customerContractOneID": "CAXLTHAJNAHZYGZZ",
+      "customerOneID": "CAXSJRTGOPVESYZZ",
+      "manufactureContractOneID": "CAXLBRHHQAJAIOZZ",
+      "manufacturerOneID": "CAXLBRHHQAJAIOZZ",
+      "partNameCustomer": "PA6 GF40",
+      "partNameManufacturer": "PA6 GF40",
+      "partNumberCustomer": "12324",
+      "partNumberManufacturer": "12324"
+    },
+    "uniqueData": {
+      "customerUniqueID": "hkuggbysaubftatddllmamhdusxgmgoikrhmolapjwgvbucryfdcipzvawkxzerj",
+      "manufacturerUniqueID": "jhodisvmowjtnsdzdbdljvfghntaadmhydskrcppywjazluedemqwtdthigwpvke",
+      "uniqueID": "cylkplhpdoeatriwdgippwqjpdtkmzwzmkscwybgrtkmyqeakffxcuhoocswibqs"
+    },
+    "individualData": {
+      "productionCountryCode": "DE",
+      "productionDateGMT": "2021-10-01T03:41:25.028+02:00"
+    },
+    "supplierTree": {
+      "isParentOf": []
+    },
+    "partTree": {
+      "isParentOf": []
+    },
+    "qualityAlertData": null
+  }
+]
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+%}
+
+### Asset Bulk POST 206
+POST http://localhost:8080/api/asset/bulk
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+[
+  {
+    "staticData": {
+      "customerContractOneID": "CAXLTHAJNAHZYGZZ",
+      "customerOneID": "CAXSJRTGOPVESYZZ",
+      "manufactureContractOneID": "CAXLBRHHQAJAIOZZ",
+      "manufacturerOneID": "CAXLBRHHQAJAIOZZ",
+      "partNameCustomer": "PA6 GF40",
+      "partNameManufacturer": "PA6 GF40",
+      "partNumberCustomer": "12324",
+      "partNumberManufacturer": "12324"
+    },
+    "uniqueData": {
+      "customerUniqueID": "nrawssgvbcvvlpofiadnvliigjqvpdmflelinhxztdntcxldftqoexlracaslqdd",
+      "uniqueID": "gwvejdnetrjnffsrqrgsjlrlgwintatnxbltrifnrcebkjadxdieyuryyfytqntr"
+    },
+    "individualData": {
+      "productionCountryCode": "DE",
+      "productionDateGMT": "2021-10-01T03:41:24.406+02:00"
+    },
+    "supplierTree": {
+      "isParentOf": []
+    },
+    "partTree": {
+      "isParentOf": []
+    },
+    "qualityAlertData": null
+  },
+  {
+    "staticData": {
+      "customerContractOneID": "CAXLTHAJNAHZYGZZ",
+      "customerOneID": "CAXSJRTGOPVESYZZ",
+      "manufactureContractOneID": "CAXLBRHHQAJAIOZZ",
+      "manufacturerOneID": "CAXLBRHHQAJAIOZZ",
+      "partNameCustomer": "PA6 GF40",
+      "partNameManufacturer": "PA6 GF40",
+      "partNumberCustomer": "12324",
+      "partNumberManufacturer": "12324"
+    },
+    "uniqueData": {
+      "customerUniqueID": "yyxhpwehekvjwnlwhexeqrrlutmatxgqckbxfiizxssnejorpqqorfsmcpamtigi",
+      "manufacturerUniqueID": "ineinohodlymrhawgfldrgihefbhaksnpemshwlprktztbihfinziaykkcbeslec",
+      "uniqueID": "jqvmfpoocnwadoguuaxjjficfzgtuiwpaojxcloperzbxzlrpshbypeekdkjiwfj"
+    },
+    "individualData": {
+      "productionCountryCode": "DE",
+      "productionDateGMT": "2021-10-01T03:41:24.565+02:00"
+    },
+    "supplierTree": {
+      "isParentOf": []
+    },
+    "partTree": {
+      "isParentOf": []
+    },
+    "qualityAlertData": null
+  }
+]
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 206, "Response status is not ("+response.status+" instead)");
+});
+%}
+
+### Asset Bulk POST 400
+POST http://localhost:8080/api/asset/bulk
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+[
+  {
+    "staticData": {
+      "customerContractOneID": "CAXLTHAJNAHZYGZZ",
+      "customerOneID": "CAXSJRTGOPVESYZZ",
+      "manufactureContractOneID": "CAXLBRHHQAJAIOZZ",
+      "manufacturerOneID": "CAXLBRHHQAJAIOZZ",
+      "partNameCustomer": "PA6 GF40",
+      "partNameManufacturer": "PA6 GF40",
+      "partNumberCustomer": "12324",
+      "partNumberManufacturer": "12324"
+    },
+    "uniqueData": {
+      "customerUniqueID": "nrawssgvbcvvlpofiadnvliigjqvpdmflelinhxztdntcxldftqoexlracaslqdd",
+      "uniqueID": "gwvejdnetrjnffsrqrgsjlrlgwintatnxbltrifnrcebkjadxdieyuryyfytqntr"
+    },
+    "individualData": {
+      "productionCountryCode": "DE",
+      "productionDateGMT": "2021-10-01T03:41:24.406+02:00"
+    },
+    "supplierTree": {
+      "isParentOf": []
+    },
+    "partTree": {
+      "isParentOf": []
+    },
+    "qualityAlertData": null
+  },
+  {
+    "staticData": {
+      "customerContractOneID": "CAXLTHAJNAHZYGZZ",
+      "customerOneID": "CAXSJRTGOPVESYZZ",
+      "manufactureContractOneID": "CAXLBRHHQAJAIOZZ",
+      "manufacturerOneID": "CAXLBRHHQAJAIOZZ",
+      "partNameCustomer": "PA6 GF40",
+      "partNameManufacturer": "PA6 GF40",
+      "partNumberCustomer": "12324",
+      "partNumberManufacturer": "12324"
+    },
+    "uniqueData": {
+      "customerUniqueID": "yyxhpwehekvjwnlwhexeqrrlutmatxgqckbxfiizxssnejorpqqorfsmcpamtigi",
+      "uniqueID": "jqvmfpoocnwadoguuaxjjficfzgtuiwpaojxcloperzbxzlrpshbypeekdkjiwfj"
+    },
+    "individualData": {
+      "productionCountryCode": "DE",
+      "productionDateGMT": "2021-10-01T03:41:24.565+02:00"
+    },
+    "supplierTree": {
+      "isParentOf": []
+    },
+    "partTree": {
+      "isParentOf": []
+    },
+    "qualityAlertData": null
+  }
+]
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 400, "Response status is not ("+response.status+" instead)");
+});
+%}

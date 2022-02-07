@@ -1,0 +1,102 @@
+<!--
+  ~ Copyright 2021 The PartChain Authors. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<section class="flex flex-col mt-2">
+  <ng-container *ngIf="this.filteredQueuedInvestigations.length; else empty">
+    <div
+      class="flex flex-row justify-between items-center p-2 my-0.5 bg-white"
+      *ngFor="let alert of this.filteredQueuedInvestigations; let i = index"
+    >
+      <p class="regular-text">
+        {{ alert.originCompany }} requested an investigation on {{ alert.numberOfParts }} part<ng-container
+          *ngIf="alert.numberOfParts !== 1"
+          >s</ng-container
+        >
+      </p>
+      <div class="flex flex-row justify-between items-center">
+        <p class="regular-text">{{ alert.timestamp | appDateSplit }}</p>
+        <section class="flex flex-row justify-between items-center ml-10">
+          <span
+            [ngClass]="{
+              selected: this.activeIndex === i && this.isExpanded
+            }"
+            class="flex justify-center items-center p-2 cursor-pointer mr-2.5"
+            (click)="this.expand($event, i, alert.alertId)"
+            id="investigation-menu"
+            aria-haspopup="true"
+          >
+            <svg-icon size="sm" key="more-line"></svg-icon>
+          </span>
+        </section>
+      </div>
+    </div>
+    <div
+      [ngClass]="{
+        'fade-in': this.isExpanded,
+        'fade-out': !this.isExpanded
+      }"
+      class="investigation-menu"
+      *ngIf="this.isExpanded"
+      role="menu"
+      aria-orientation="vertical"
+      aria-labelledby="investigation-menu"
+      [style.top]="this.menuPositionY"
+    >
+      <section class="hover:bg-dustyGrayShadeGallery p-1 cursor-pointer" (click)="this.viewDetails()">
+        <div class="flex flex-row items-center space-x-1">
+          <span class="flex justify-center items-center cursor-pointer mr-2.5 p-2">
+            <svg-icon size="xs" key="eye-line"></svg-icon>
+          </span>
+          <p class="small-text">View details</p>
+        </div>
+      </section>
+
+      <section class="hover:bg-dustyGrayShadeGallery p-1 cursor-pointer" (click)="this.emitCommit()">
+        <div class="flex flex-row items-center space-x-1">
+          <span class="flex justify-center items-center p-2 cursor-pointer mr-2.5">
+            <svg-icon size="xs" key="share-line"></svg-icon>
+          </span>
+          <p class="small-text">Send request to supplier</p>
+        </div>
+      </section>
+
+      <section class="hover:bg-dustyGrayShadeGallery p-1 cursor-pointer" (click)="this.emitDelete()">
+        <div class="flex flex-row items-center space-x-1">
+          <span class="flex justify-center items-center p-2 cursor-pointer mr-2.5">
+            <svg-icon size="xs" key="delete-bin-line"></svg-icon>
+          </span>
+          <p class="small-text">Discard</p>
+        </div>
+      </section>
+    </div>
+    <mat-paginator
+      [length]="this.pageLength"
+      [pageSize]="this.pageSize"
+      [hidePageSize]="true"
+      (page)="this.pageChangeEvent($event)"
+    ></mat-paginator>
+  </ng-container>
+
+  <ng-template #empty>
+    <app-quality-alert-empty-state
+      [imageUrl]="'/assets/images/relax.svg'"
+      [title]="'Great news'"
+      [message]="
+        'There are no quality investigation requests on the queue. When you request a quality investigation, they will appear here to be distributed '
+      "
+    ></app-quality-alert-empty-state>
+  </ng-template>
+</section>

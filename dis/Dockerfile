@@ -3,13 +3,13 @@ FROM maven:3.5-jdk-8 as build
 
 # copy the project files
 #COPY / /
-COPY ./backend/pom.xml /pom.xml
+COPY ./dis/backend/pom.xml /pom.xml
 
 # build all dependencies
 RUN mvn dependency:go-offline -B
 
 # copy your other files
-COPY ./backend/src ./src
+COPY ./dis/backend/src ./src
 
 # build for release
 RUN mvn package

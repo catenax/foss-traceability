@@ -1,4 +1,4 @@
-name: Deploy to AWS
+name: aems_main
 
 on:
   push:

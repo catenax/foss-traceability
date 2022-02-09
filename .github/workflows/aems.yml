@@ -49,6 +49,10 @@ jobs:
     - name: Update kube config
       run: aws eks update-kubeconfig --name dev-partchain --region eu-central-1
     - name: Deploy image to Amazon EKS
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: foss-traceability-aems-dev
+        IMAGE_TAG: ${{ github.sha }}
       run: |
         kubectl set image deployment/aems aems=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -n taas --record
 

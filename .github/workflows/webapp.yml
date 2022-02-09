@@ -17,6 +17,12 @@ jobs:
 
     - name: Check out code
       uses: actions/checkout@v2
+    
+    - name: Install Kubectl
+      uses: azure/setup-kubectl@v2.0
+      with:
+        version: 'v1.21.3'
+      id: install
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -37,4 +43,16 @@ jobs:
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG . -f webapp/Dockerfile  --build-arg PROFILE=stage
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+ 
+    - name: Update kube config
+      run: aws eks update-kubeconfig --name dev-partchain --region eu-central-1
+    - name: Deploy image to Amazon EKS
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: foss-traceability-webapp-dev
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        kubectl set image deployment/ui ui=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -n taas --record
+
+
 

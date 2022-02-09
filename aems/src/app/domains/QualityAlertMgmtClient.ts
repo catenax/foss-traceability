@@ -618,7 +618,7 @@ export default class QualityAlertMgmtClient extends SmartContractClient {
         const mspIDofTargetCompany = await getMSPFromCustomerOneID(event.event_target_company);
         Logger.info(`[${mspIDFromJWT}] commitQualityAlert: mspIDofTargetCompany = ${mspIDofTargetCompany}`);
         // iterating through all the assets which are added to the alert
-        if (partChainOrgs.includes(mspIDofTargetCompany) && mspIDofTargetCompany != mspIDFromJWT) {
+        if (mspIDofTargetCompany != mspIDFromJWT) {
           Logger.info(` [${mspIDFromJWT}] commitQualityAlert: customerOneID = ${event.event_target_company} is part of PartChain`);
           if (event.event_flow === AlertFlow.TOP_DOWN) {
             // Committing event for Top-Down

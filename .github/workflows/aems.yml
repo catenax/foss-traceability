@@ -9,7 +9,7 @@ on:
 
 jobs:
 
-  build:
+  deploy:
     name: Build image
     runs-on: ubuntu-latest
 
@@ -17,6 +17,14 @@ jobs:
 
     - name: Check out code
       uses: actions/checkout@v2
+    
+    - name: Install Kubectl
+      uses: azure/setup-kubectl@v2.0
+      with:
+        version: 'v1.21.3'
+      id: install
+
+
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -33,8 +41,14 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: foss-traceability-aems-dev
-        IMAGE_TAG: ${{ github.sha }}
+        IMAGE_TAG: ${{ echo ${github.sha} | cut -b -7  }}
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG . -f aems/Dockerfile
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:dev . -f aems/Dockerfile
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+ 
+    - name: Update kube config
+      run: aws eks update-kubeconfig --name dev-partchain --region eu-central-1
+    - name: Deploy image to Amazon EKS
+      run: |
+        kubectl set image deployment/aems aems=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -n taas --record
 

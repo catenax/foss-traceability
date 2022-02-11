@@ -16,7 +16,7 @@
 
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment as dev } from 'src/environments/environment.dev';
+import { environment as dev } from 'src/environments/environment';
 import { environment as stage } from 'src/environments/environment.stage';
 import { isDevMode } from '@angular/core';
 

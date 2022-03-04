@@ -200,7 +200,7 @@ export class InvestigationsRaiseAlertComponent implements OnInit {
    * @memberof InvestigationsRaiseAlertComponent
    */
   public addToQueue(): void {
-    const assets = concat(...this.data.serialNumbers, ...this.selectedRows) as Asset[];
+    const assets: Asset[] = concat(...this.data.serialNumbers, ...this.selectedRows);
     this.dialogRef.close({
       qualityType: this.raiseForm.get('type').value,
       selectedSerialNumbers: assets,

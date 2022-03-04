@@ -15,7 +15,7 @@
 }
 
 .raised-form {
-  @apply grid grid-cols-2 gap-1;
+  @apply grid grid-cols-2 gap-y-2;
 
   &__type-field {
     @apply col-start-1 col-span-1;
@@ -26,8 +26,12 @@
   }
 }
 
+.vertical-gap {
+  @apply gap-y-8;
+}
+
 .modal-content {
-  @apply p-4 mt-2 overflow-y-scroll;
+  @apply flex flex-col justify-between p-4 overflow-y-auto;
 }
 
 .screen-height {
@@ -62,6 +66,10 @@
     }
   }
 
+  .md-drppicker {
+    left: 0 !important;
+  }
+
   &__icon {
     @apply pointer-events-none absolute;
     left: 20%;
@@ -88,6 +96,10 @@
 
 .centered-content {
   @apply flex justify-center;
+}
+
+.md-drppicker {
+  left: 0;
 }
 
 .fade-in {

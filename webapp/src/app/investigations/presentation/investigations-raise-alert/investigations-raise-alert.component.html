@@ -11,7 +11,13 @@
     'screen-height': (this.raisedParts$ | async) && this.isExpanded
   }"
 >
-  <form [formGroup]="this.raiseForm" class="raised-form">
+  <form
+    [formGroup]="this.raiseForm"
+    class="raised-form"
+    [ngClass]="{
+      'vertical-gap': this.isExpanded
+    }"
+  >
     <p class="small-text">Please choose a new quality status for the parts and add a description</p>
     <mat-form-field class="raised-form__type-field" appearance="fill">
       <mat-label>Quality type</mat-label>

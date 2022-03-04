@@ -16,7 +16,7 @@
 
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AssetsListFacade } from '../../abstraction/assets-list.facade';
+import { TableFacade } from 'src/app/shared/components/table/table.facade';
 
 /**
  *
@@ -48,11 +48,11 @@ export class SupplierPartsComponent {
 
   /**
    * @constructor SupplierPartsComponent
-   * @param {AssetsListFacade} assetsFacade
+   * @param {TableFacade} tableFacade
    * @memberof SupplierPartsComponent
    */
-  constructor(private assetsFacade: AssetsListFacade) {
-    this.selectedAsset$ = this.assetsFacade.selectedAsset$;
+  constructor(private tableFacade: TableFacade) {
+    this.selectedAsset$ = this.tableFacade.selectedAsset$;
     this.activeTab = 'customer';
   }
 
@@ -63,7 +63,7 @@ export class SupplierPartsComponent {
    * @memberof SupplierPartsComponent
    */
   public getTab(tab: string): void {
-    this.assetsFacade.resetSelectedAsset();
+    this.tableFacade.resetSelectedAsset();
     this.activeTab = tab;
   }
 }

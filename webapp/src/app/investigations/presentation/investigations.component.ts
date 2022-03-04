@@ -87,6 +87,8 @@ export class InvestigationsComponent implements OnInit {
 
     this.layoutFacade.setTabIndex(tabIndex[tab]);
 
+    localStorage.setItem('tabIndex', tabIndex[tab]);
+
     this.router.navigate([`${view.alertId}`], { relativeTo: this.route }).then();
   }
 

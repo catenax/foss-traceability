@@ -105,50 +105,6 @@ export class AssetsListFacade {
   }
 
   /**
-   * Selected rows state getter
-   *
-   * @readonly
-   * @type {Observable<Asset[]>}
-   * @memberof AssetsListFacade
-   */
-  get selectedRows$(): Observable<unknown[]> {
-    return this.assetsState.getSelectedRows$;
-  }
-
-  /**
-   * Get selected rows snapshot
-   *
-   * @readonly
-   * @type {unknown[]}
-   * @memberof AssetsListFacade
-   */
-  get selectedRowsSnapshot(): unknown[] {
-    return this.assetsState.getSelectRowsSnapshot;
-  }
-
-  /**
-   * Selected asset state getter
-   *
-   * @readonly
-   * @type {Observable<string>}
-   * @memberof AssetsListFacade
-   */
-  get selectedAsset$(): Observable<string> {
-    return this.assetsState.getSelectedAsset$;
-  }
-
-  /**
-   * Selected asset state snapshot getter
-   *
-   * @readonly
-   * @type {string}
-   * @memberof AssetsListFacade
-   */
-  get selectedAssetSnapshot$(): string {
-    return this.assetsState.getSelectedAssetSnapshot;
-  }
-
-  /**
    * Filters state getter
    *
    * @readonly
@@ -284,7 +240,6 @@ export class AssetsListFacade {
     this.assetsService.getAssets(filter, currentPage, totalAssetFields).subscribe(
       (assets: AssetsList) => {
         this.assetsState.setFullAssets(assets);
-        this.assetsState.setSelectedRows(assets.data);
         this.assetsState.setLoading(false);
       },
       error => this.assetsState.setAssets({ error }),
@@ -304,38 +259,6 @@ export class AssetsListFacade {
       dateTo: this.getFormattedDate(filters.productionDateTo.value),
     };
     this.assetsState.setFilters(filters, dateRange);
-  }
-
-  /**
-   * Setting the selected rows state
-   *
-   * @param {Asset[]} selectedRows
-   * @return {void}
-   * @memberof AssetsListFacade
-   */
-  public setSelectedRows(selectedRows: unknown[]): void {
-    this.assetsState.setSelectedRows(selectedRows);
-  }
-
-  /**
-   * Setting the selected assets state
-   *
-   * @param {string} selectedAsset
-   * @return {void}
-   * @memberof AssetsListFacade
-   */
-  public setSelectedAsset(selectedAsset: string): void {
-    this.assetsState.setSelectedAsset(selectedAsset);
-  }
-
-  /**
-   * Reset the selected asset to his initial state
-   *
-   * @return {void}
-   * @memberof AssetsListFacade
-   */
-  public resetSelectedAsset(): void {
-    this.assetsState.resetSelectedAsset();
   }
 
   /**
@@ -367,16 +290,6 @@ export class AssetsListFacade {
    */
   public resetFilters(): void {
     this.assetsState.resetFilters();
-  }
-
-  /**
-   * Resetting the selected rows to their initial value
-   *
-   * @return {void}
-   * @memberof AssetsListFacade
-   */
-  public resetSelectedRows(): void {
-    this.assetsState.resetSelectedRows();
   }
 
   /**

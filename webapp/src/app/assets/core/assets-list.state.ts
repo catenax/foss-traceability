@@ -63,26 +63,6 @@ export class AssetsListState {
   private readonly pagination$: State<Pagination> = new State<Pagination>(undefined);
 
   /**
-   * Selected rows state
-   *
-   * @private
-   * @readonly
-   * @type {State<Asset[]>}
-   * @memberof AssetsListState
-   */
-  private readonly selectedRows$: State<unknown[]> = new State<unknown[]>([]);
-
-  /**
-   * Selected asset state
-   *
-   * @private
-   * @readonly
-   * @type {State<string>}
-   * @memberof AssetsListState
-   */
-  private readonly selectedAsset$: State<string> = new State<string>('');
-
-  /**
    * Total of assets state
    *
    * @private
@@ -148,28 +128,6 @@ export class AssetsListState {
   }
 
   /**
-   * Selected rows getter
-   *
-   * @readonly
-   * @type {Observable<Asset[]>}
-   * @memberof AssetsListState
-   */
-  get getSelectedRows$(): Observable<unknown[]> {
-    return this.selectedRows$.observable;
-  }
-
-  /**
-   * Get selected rows snapshot
-   *
-   * @readonly
-   * @type {unknown[]}
-   * @memberof AssetsListState
-   */
-  get getSelectRowsSnapshot(): unknown[] {
-    return this.selectedRows$.snapshot;
-  }
-
-  /**
    * Total of assets getter
    *
    * @readonly
@@ -178,28 +136,6 @@ export class AssetsListState {
    */
   get getTotalOfAssets$(): Observable<number> {
     return this.totalOfAssets$.observable;
-  }
-
-  /**
-   * Selected asset getter
-   *
-   * @readonly
-   * @type {Observable<string>}
-   * @memberof AssetsListState
-   */
-  get getSelectedAsset$(): Observable<string> {
-    return this.selectedAsset$.observable;
-  }
-
-  /**
-   * Selected asset snapshot getter
-   *
-   * @readonly
-   * @type {string}
-   * @memberof AssetsListState
-   */
-  get getSelectedAssetSnapshot(): string {
-    return this.selectedAsset$.snapshot;
   }
 
   /**
@@ -287,17 +223,6 @@ export class AssetsListState {
   }
 
   /**
-   * Updates the selected rows state
-   *
-   * @param {Asset[]} selectedRows
-   * @return {void}
-   * @memberof AssetsListState
-   */
-  public setSelectedRows(selectedRows: unknown[]): void {
-    this.selectedRows$.update(selectedRows);
-  }
-
-  /**
    * Updates the total of assets state
    *
    * @param {number} total
@@ -319,30 +244,6 @@ export class AssetsListState {
   public setFilters(filters: AssetFilter, dateRange: { dateFrom: string; dateTo: string }): void {
     const selectedFilters: { key: string; value: string }[] = AssetsListAssembler.assembleFilters(filters, dateRange);
     this.filters$.update(selectedFilters);
-  }
-
-  /**
-   * Updates the selected asset state
-   *
-   * @param {string} selectedAsset
-   * @return {void}
-   * @memberof AssetsListState
-   */
-  public setSelectedAsset(selectedAsset: string): void {
-    const previousValue: string = this.selectedAsset$.snapshot;
-    if (selectedAsset !== previousValue) {
-      this.selectedAsset$.update(selectedAsset);
-    }
-  }
-
-  /**
-   * Reset the selected asset to his initial state
-   *
-   * @return {void}
-   * @memberof AssetsListState
-   */
-  public resetSelectedAsset(): void {
-    this.selectedAsset$.reset();
   }
 
   /**
@@ -374,16 +275,6 @@ export class AssetsListState {
    */
   public resetFilters(): void {
     this.filters$.reset();
-  }
-
-  /**
-   * Resets the selected rows state to the initial value
-   *
-   * @return {void}
-   * @memberof AssetsListState
-   */
-  public resetSelectedRows(): void {
-    this.selectedRows$.reset();
   }
 
   /**

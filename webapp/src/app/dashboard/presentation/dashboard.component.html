@@ -116,7 +116,7 @@
       </ng-template>
 
       <ng-template #errorAlertsTmp let-alert="view">
-        <div class="mt-6">
+        <div class="mt-4">
           <app-quality-alert-empty-state
             [title]="'Something went wrong!'"
             [imageUrl]="'/assets/images/undraw_server_down_s4lk.svg'"
@@ -155,7 +155,7 @@
         ></app-quality-list>
       </ng-template>
       <ng-template #errorInvestigationsTmp let-investigation="view">
-        <div class="mt-6">
+        <div class="mt-4">
           <app-quality-alert-empty-state
             [title]="'Something went wrong!'"
             [imageUrl]="'/assets/images/undraw_server_down_s4lk.svg'"
@@ -202,27 +202,29 @@
     </ng-template>
   </section>
 
-  <section class="histogram-chart-section">
+  <section class="histogram-chart-section relative">
     <div class="histogram-title-row">
       <h3>Parts with quality alerts histogram</h3>
       <div class="histogram-title-row__content">
-        <input
-          class="histogram-date-input"
-          type="text"
-          ngxDaterangepickerMd
-          [(ngModel)]="this.selected"
-          [showCustomRangeLabel]="true"
-          [alwaysShowCalendars]="true"
-          [ranges]="this.ranges"
-          [linkedCalendars]="true"
-          [placeholder]="'--/--/----  --/--/----'"
-          [drops]="'up'"
-          [opens]="'left'"
-          [locale]="this.locale"
-          [autoApply]="true"
-          (ngModelChange)="this.setDates($event)"
-        />
-        <svg-icon size="sm" class="calendar-svg" key="calendar-line"></svg-icon>
+        <div class="calendar-section">
+          <input
+            class="calendar-section__input"
+            type="text"
+            ngxDaterangepickerMd
+            [(ngModel)]="this.selected"
+            [showCustomRangeLabel]="true"
+            [alwaysShowCalendars]="true"
+            [ranges]="this.ranges"
+            [linkedCalendars]="true"
+            [placeholder]="'--/--/----  --/--/----'"
+            [drops]="'down'"
+            [opens]="'left'"
+            [locale]="this.locale"
+            [autoApply]="true"
+            (ngModelChange)="this.setDates($event)"
+          />
+          <svg-icon size="sm" class="calendar-section__icon" key="calendar-line"></svg-icon>
+        </div>
 
         <div class="histogram-quick-filter">
           <p class="large-text">Show:</p>

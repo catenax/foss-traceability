@@ -113,7 +113,9 @@ export class QualityAlertCreateComponent implements OnInit, OnDestroy {
         const qualityAlerts: GroupedAlert[] = pendingAlerts.filter(alert =>
           remove(alert.children, part => part.status !== QualityAlertTypes.PENDING),
         );
-        const alertsChildren: QualityAlertChildren[] = flatten(qualityAlerts.map(alerts => alerts.children));
+        const alertsChildren: QualityAlertChildren[] = flatten(
+          qualityAlerts.map(parentAlerts => parentAlerts.children),
+        );
         this.qualityAlertSerialNumbers = alertsChildren.map(alert => alert.serialNumberCustomer);
         this.assets = this.data.serialNumbers.filter(asset =>
           this.qualityAlertSerialNumbers.includes(asset.serialNumberCustomer),

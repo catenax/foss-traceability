@@ -33,6 +33,7 @@ import { AssetsList } from '../model/assets-list.model';
 import { QualityAlertFacade } from 'src/app/quality-alert/abstraction/quality-alert.facade';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RoleDirective } from 'src/app/shared/directives/role.directive';
+import { TableFacade } from 'src/app/shared/components/table/table.facade';
 
 describe('AssetsListComponent', () => {
   let component: AssetsListComponent;
@@ -133,21 +134,19 @@ describe('AssetsListComponent', () => {
       return true;
     },
 
-    resetSelectedRows() {
-      return true;
-    },
-
     resetFilters() {
       return true;
-    },
-
-    setSelectedAsset() {
-      return;
     },
   };
 
   const mockQualityAlert = {
     createQualityAlert() {
+      return;
+    },
+  };
+
+  const mockTableFacade = {
+    setSelectedAsset() {
       return;
     },
   };
@@ -177,6 +176,7 @@ describe('AssetsListComponent', () => {
         { provide: AuthService, useValue: userData },
         { provide: Router, useValue: { url: '/vehicles' } },
         { provide: AssetsListFacade, useValue: mockFacade },
+        { provide: TableFacade, useValue: mockTableFacade },
         { provide: QualityAlertFacade, useValue: mockQualityAlert },
         {
           provide: ActivatedRoute,

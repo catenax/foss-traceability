@@ -82,39 +82,19 @@ export class DashboardService {
   }
 
   /**
-   * Get top alerts request
+   * Get top alerts or investigations
    *
-   * @param {string} topAlerts
-   * @param {string} [eventFlow='BOTTOM-UP']
-   * @return {Observable<{topAlerts: TopAlerts, remainingAlerts: RemainingAlerts}>}
+   * @param {string} top
+   * @param {string} eventFlow
+   * @return {Observable<{ topAlerts: TopAlerts[]; remainingAlerts: RemainingAlerts }>}
    * @memberof DashboardService
    */
   public getTopAlerts(
-    topAlerts: string,
-    eventFlow = 'BOTTOM-UP',
+    top: string,
+    eventFlow: string,
   ): Observable<{ topAlerts: TopAlerts[]; remainingAlerts: RemainingAlerts }> {
-    const httpParams = new HttpParams().set('topAlerts', topAlerts).set('eventFlow', eventFlow);
-    return this.apiService
-      .getBy<{ topAlerts: TopAlerts[]; remainingAlerts: RemainingAlerts }>(
-        `${this.url.laapi}kpi/alert-summary?`,
-        httpParams,
-      )
-      .pipe(map((data: { topAlerts: TopAlerts[]; remainingAlerts: RemainingAlerts }) => data));
-  }
+    const httpParams = new HttpParams().set('topAlerts', top).set('eventFlow', eventFlow);
 
-  /**
-   * Get top investigations request
-   *
-   * @param {string} topAlerts
-   * @param {string} [eventFlow='TOP-DOWN']
-   * @return {Observable<{topAlerts: TopAlerts, remainingAlerts: RemainingAlerts}>}
-   * @memberof DashboardService
-   */
-  public getTopInvestigations(
-    topAlerts: string,
-    eventFlow = 'TOP-DOWN',
-  ): Observable<{ topAlerts: TopAlerts[]; remainingAlerts: RemainingAlerts }> {
-    const httpParams = new HttpParams().set('topAlerts', topAlerts).set('eventFlow', eventFlow);
     return this.apiService
       .getBy<{ topAlerts: TopAlerts[]; remainingAlerts: RemainingAlerts }>(
         `${this.url.laapi}kpi/alert-summary?`,

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Table } from 'src/app/shared/components/table/table';
 import { InvestigationsFacade } from '../../abstraction/investigations.facade';
@@ -25,10 +25,10 @@ import { Asset } from 'src/app/shared/model/asset.model';
 import { AssetFilter } from 'src/app/assets/model/asset-filter.model';
 import { View } from 'src/app/shared/model/view.model';
 import { QualityAlertFacade } from 'src/app/quality-alert/abstraction/quality-alert.facade';
-import { AssetsListFacade } from 'src/app/assets/abstraction/assets-list.facade';
 import { LayoutFacade } from 'src/app/shared/abstraction/layout-facade';
 import { SelectionModel } from '@angular/cdk/collections';
 import { PartsTableQueuedBuilder } from '../../builder/parts-table-queued.builder';
+import { TableFacade } from 'src/app/shared/components/table/table.facade';
 
 /**
  *
@@ -42,7 +42,7 @@ import { PartsTableQueuedBuilder } from '../../builder/parts-table-queued.builde
   templateUrl: './investigation-detail.component.html',
   styleUrls: ['./investigation-detail.component.scss'],
 })
-export class InvestigationDetailComponent implements OnInit, OnDestroy, AfterViewChecked {
+export class InvestigationDetailComponent implements OnInit, OnDestroy {
   /**
    * Quality investigation
    *
@@ -123,24 +123,21 @@ export class InvestigationDetailComponent implements OnInit, OnDestroy, AfterVie
    * @param {QualityAlertFacade} qualityAlertFacade
    * @param {AssetsListFacade} assetsFacade
    * @param {LayoutFacade} layoutFacade
-   * @param {ChangeDetectorRef} changeDetector
    * @memberof InvestigationDetailComponent
    */
   constructor(
     private route: ActivatedRoute,
     private investigationsFacade: InvestigationsFacade,
     private qualityAlertFacade: QualityAlertFacade,
-    private assetsFacade: AssetsListFacade,
+    private tableFacade: TableFacade,
     private layoutFacade: LayoutFacade,
-    private changeDetector: ChangeDetectorRef,
   ) {
     this.investigationStatus$ = this.investigationsFacade.investigationStatus$;
     this.subscribeToParams();
-    // If the page refreshes this state will get lost and the table will loose the select checkbox
     this.partsTable =
-      this.layoutFacade.tabIndexSnapshot !== 0 ? PartsTableQueuedBuilder.getTable() : PartsTableBuilder.getTable();
+      +localStorage.getItem('tabIndex') !== 0 ? PartsTableQueuedBuilder.getTable() : PartsTableBuilder.getTable();
     this.parts$ = this.investigationsFacade.parts$;
-    this.selectedAsset$ = this.assetsFacade.selectedAsset$;
+    this.selectedAsset$ = this.tableFacade.selectedAsset$;
     this.isSideBarExpanded$ = this.layoutFacade.isSideBarExpanded$;
     this.isAlertReadyToDelete$ = this.qualityAlertFacade.isAlertReadyToDelete$;
     this.selectedRows = [];
@@ -160,20 +157,6 @@ export class InvestigationDetailComponent implements OnInit, OnDestroy, AfterVie
       type: { value: 'all' },
     };
     this.investigationsFacade.setParts(filter);
-  }
-
-  /**
-   * Angular lifecycle method - After view checked
-   *
-   * @return {void}
-   * @memberof InvestigationDetailComponent
-   */
-  ngAfterViewChecked(): void {
-    // The change detector is called to fix a 'ExpressionChangedAfterItHasBeenCheckedError' bug
-    // This happens because we receive a selected row event and set a variable in this component with those values
-    // That triggers a button display and a component display which causes a bug.
-    // The values changed before the component checks the current value
-    this.changeDetector.detectChanges();
   }
 
   /**
@@ -257,7 +240,7 @@ export class InvestigationDetailComponent implements OnInit, OnDestroy, AfterVie
    * @memberof InvestigationDetailComponent
    */
   public clearSelection(): void {
-    this.assetsFacade.setSelectedRows([]);
+    this.selectedRows = [];
     this.removeSelectedRows = !this.removeSelectedRows;
   }
 
@@ -268,7 +251,7 @@ export class InvestigationDetailComponent implements OnInit, OnDestroy, AfterVie
    * @memberof InvestigationDetailComponent
    */
   public closeSideBar(): void {
-    this.assetsFacade.setSelectedAsset(undefined);
+    this.tableFacade.setSelectedAsset(undefined);
   }
 
   /**

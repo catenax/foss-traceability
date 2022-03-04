@@ -16,14 +16,14 @@
 
 export const environment = {
   production: false,
-  keycloakUrl: 'https://auth.dev.catenax.tracefoss.com/auth/',
+  keycloakUrl: 'https://auth.test.catenax.partchain.dev/auth/',
   multiTenant: true,
-  defaultRealm: 'taas-zf',
+  defaultRealm: 'bmw',
   baseUrl: '/',
   realmRegExp: '^https?://[^/]+/([-a-z-A-Z-0-9]+)',
-  laapi: 'https://api.taas.dev.catenax.tracefoss.com/v1/',
-  aems: 'https://api.aems.taas.dev.catenax.tracefoss.com/v1/',
-  taasLaapi: 'https://api.taas.dev.catenax.tracefoss.com/v1/',
-  taasAems: 'https://api.aems.taas.dev.catenax.tracefoss.com/v1/',
+  laapi: 'https://api.bmw.test.catenax.partchain.dev/v1/',
+  aems: 'https://api.aems.bmw.test.catenax.partchain.dev/v1/',
+  taasLaapi: 'https://api.taas.test.catenax.partchain.dev/v1/',
+  taasAems: 'https://api.aems.taas.test.catenax.partchain.dev/v1/',
   mapBoxAccessToken: 'pk.eyJ1IjoiZmVsaXhnZXJiaWciLCJhIjoiY2sxNmh4d2dvMTJkdTNpcGZtcWhvaHpuNyJ9.2hJW4R6PoiqIgytqUn1kbg',
 };

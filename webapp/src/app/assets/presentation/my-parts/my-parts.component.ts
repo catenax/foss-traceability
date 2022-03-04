@@ -16,7 +16,7 @@
 
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AssetsListFacade } from '../../abstraction/assets-list.facade';
+import { TableFacade } from 'src/app/shared/components/table/table.facade';
 
 @Component({
   selector: 'app-my-parts',
@@ -32,7 +32,12 @@ export class MyPartsComponent {
    */
   public selectedAsset$: Observable<string>;
 
-  constructor(private assetsFacade: AssetsListFacade) {
-    this.selectedAsset$ = this.assetsFacade.selectedAsset$;
+  /**
+   * @constructor MyPartsComponent
+   * @param {TableFacade} tableFacade
+   * @memberof MyPartsComponent
+   */
+  constructor(private tableFacade: TableFacade) {
+    this.selectedAsset$ = this.tableFacade.selectedAsset$;
   }
 }

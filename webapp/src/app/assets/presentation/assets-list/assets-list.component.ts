@@ -15,9 +15,7 @@
  */
 
 import {
-  AfterViewChecked,
   AfterViewInit,
-  ChangeDetectorRef,
   Component,
   HostListener,
   Input,
@@ -43,6 +41,8 @@ import { QualityAlertFacade } from 'src/app/quality-alert/abstraction/quality-al
 import { MyPartsTableBuilder } from '../../builder/my-parts-table.builder';
 import { SupplierPartsTableBuilder } from '../../builder/supplier-parts-table.builder';
 import { CustomerPartsTableBuilder } from '../../builder/customer-parts-table.builder';
+import { SelectionModel } from '@angular/cdk/collections';
+import { TableFacade } from 'src/app/shared/components/table/table.facade';
 
 /**
  *
@@ -59,7 +59,7 @@ import { CustomerPartsTableBuilder } from '../../builder/customer-parts-table.bu
   styleUrls: ['./assets-list.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class AssetsListComponent implements AfterViewInit, OnDestroy, AfterViewChecked, OnChanges {
+export class AssetsListComponent implements AfterViewInit, OnDestroy, OnChanges {
   /**
    * Query type (own / other)
    *
@@ -157,14 +157,6 @@ export class AssetsListComponent implements AfterViewInit, OnDestroy, AfterViewC
   public pagination$: Observable<Pagination>;
 
   /**
-   * Selected rows state
-   *
-   * @type {Observable<Asset[]>}
-   * @memberof AssetsListComponent
-   */
-  public selectedRows$: Observable<Asset[]>;
-
-  /**
    * Total of assets state
    *
    * @type {Observable<number>}
@@ -189,12 +181,19 @@ export class AssetsListComponent implements AfterViewInit, OnDestroy, AfterViewC
   public loading$: Observable<boolean>;
 
   /**
+   * Table selected rows
+   *
+   * @type {Asset[]}
+   * @memberof AssetsListComponent
+   */
+  public selectedRows: Asset[];
+
+  /**
    * @constructor AssetsListComponent
    * @param {MatDialog} dialog
    * @param {Router} router
    * @param {AssetsListFacade} assetsFacade
    * @param {QualityAlertFacade} qualityAlertFacade
-   * @param {ChangeDetectorRef} changeDetector
    * @param {ActivatedRoute} activatedRoute
    * @memberof AssetsListComponent
    */
@@ -203,7 +202,7 @@ export class AssetsListComponent implements AfterViewInit, OnDestroy, AfterViewC
     private router: Router,
     private assetsFacade: AssetsListFacade,
     private qualityAlertFacade: QualityAlertFacade,
-    private changeDetector: ChangeDetectorRef,
+    private tableFacade: TableFacade,
     private activatedRoute: ActivatedRoute,
   ) {
     this.currentPage = 1;
@@ -218,14 +217,15 @@ export class AssetsListComponent implements AfterViewInit, OnDestroy, AfterViewC
     this.pagination$ = this.assetsFacade.pagination$;
     this.totalOfAssets$ = this.assetsFacade.totalOfAssets$;
     this.filters$ = this.assetsFacade.filters$;
-    this.selectedRows$ = this.assetsFacade.selectedRows$ as Observable<Asset[]>;
-    this.selectedAsset$ = this.assetsFacade.selectedAsset$;
+    this.selectedRows = [];
+    this.selectedAsset$ = this.tableFacade.selectedAsset$;
     this.loading$ = this.assetsFacade.loading$;
     this.fullAssets$ = this.assetsFacade.fullAssets$;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.queryType) {
+      this.clearSelection();
       const filter = this.assetsFacade.getInitialFilter(changes.queryType.currentValue);
       this.form.controls.productionDateFrom.setValue(filter.productionDateFrom.value);
       this.form.controls.productionDateTo.setValue(filter.productionDateTo.value);
@@ -245,20 +245,6 @@ export class AssetsListComponent implements AfterViewInit, OnDestroy, AfterViewC
   }
 
   /**
-   * Angular lifecycle method - After view checked
-   *
-   * @return {void}
-   * @memberof AssetsListComponent
-   */
-  ngAfterViewChecked(): void {
-    // The change detector is called to fix a 'ExpressionChangedAfterItHasBeenCheckedError' bug
-    // This happens because we receive a selected row event and set a variable in this component with those values
-    // That triggers a button display and a component display which causes a bug.
-    // The values changed before the component checks the current value
-    this.changeDetector.detectChanges();
-  }
-
-  /**
    * Angular lifecycle - Ng On Destroy
    *
    * @return {void}
@@ -266,9 +252,9 @@ export class AssetsListComponent implements AfterViewInit, OnDestroy, AfterViewC
    */
   ngOnDestroy(): void {
     this.assetsFacade.resetAssets();
-    this.assetsFacade.resetSelectedRows();
+    this.clearSelection();
     this.assetsFacade.resetFilters();
-    this.assetsFacade.setSelectedAsset(undefined);
+    this.tableFacade.setSelectedAsset(undefined);
     this.form.reset(this.assetsFacade.getDefaultForm());
   }
 
@@ -291,7 +277,7 @@ export class AssetsListComponent implements AfterViewInit, OnDestroy, AfterViewC
    * @memberof AssetsListComponent
    */
   public closeSideBar(): void {
-    this.assetsFacade.setSelectedAsset(undefined);
+    this.tableFacade.setSelectedAsset(undefined);
     this.detectScreenSize();
   }
 
@@ -310,8 +296,8 @@ export class AssetsListComponent implements AfterViewInit, OnDestroy, AfterViewC
         cb: () => {
           this.assetsFacade.getMissingDate(form);
           this.assetsFacade.resetFilters();
+          this.clearSelection();
           this.assetsFacade.setFilters(this.assetsFacade.getFilter(this.form, this.queryType));
-          this.assetsFacade.setSelectedRows([]);
           this.assetsFacade.setAssets(
             this.assetsFacade.getFilter(this.form, this.queryType),
             this.currentPage,
@@ -320,6 +306,7 @@ export class AssetsListComponent implements AfterViewInit, OnDestroy, AfterViewC
         },
         clear: () => {
           this.assetsFacade.resetFilters();
+          this.clearSelection();
           form.reset(this.assetsFacade.getDefaultForm().value);
         },
       },
@@ -335,8 +322,8 @@ export class AssetsListComponent implements AfterViewInit, OnDestroy, AfterViewC
    * @memberof AssetsListComponent
    */
   public loadNextPage(event: boolean): void {
-    this.assetsFacade.setSelectedRows([]);
-    this.assetsFacade.setSelectedAsset(undefined);
+    this.clearSelection();
+    this.tableFacade.setSelectedAsset(undefined);
     this.currentPage++;
     if (event) {
       this.assetsFacade.setAssets(this.assetsFacade.getFilter(this.form, this.queryType), this.currentPage, 'nextPage');
@@ -351,8 +338,8 @@ export class AssetsListComponent implements AfterViewInit, OnDestroy, AfterViewC
    * @memberof AssetsListComponent
    */
   public loadPreviousPage(event: boolean): void {
-    this.assetsFacade.setSelectedRows([]);
-    this.assetsFacade.setSelectedAsset(undefined);
+    this.clearSelection();
+    this.tableFacade.setSelectedAsset(undefined);
     this.currentPage--;
     if (event) {
       this.assetsFacade.setAssets(
@@ -370,8 +357,7 @@ export class AssetsListComponent implements AfterViewInit, OnDestroy, AfterViewC
    * @memberof AssetsListComponent
    */
   public clearSelection(): void {
-    this.assetsFacade.setSelectedRows([]);
-    this.removeSelectedRows = true;
+    this.selectedRows = [];
   }
 
   /**
@@ -428,6 +414,16 @@ export class AssetsListComponent implements AfterViewInit, OnDestroy, AfterViewC
   }
 
   /**
+   * Get table selected rows
+   *
+   * @param {SelectionModel<unknown>} rows
+   * @memberof AssetsListComponent
+   */
+  public getSelectedRows(rows: SelectionModel<unknown>): void {
+    this.selectedRows = rows.selected as Asset[];
+  }
+
+  /**
    * Helper method to rebuild the table for mobile size screens
    *
    * @private
@@ -435,7 +431,7 @@ export class AssetsListComponent implements AfterViewInit, OnDestroy, AfterViewC
    * @memberof AssetsListComponent
    */
   private detectScreenSize(): void {
-    const selectedAsset = this.assetsFacade.selectedAssetSnapshot$;
+    const selectedAsset = this.tableFacade.selectedAssetSnapshot;
     const table = {
       own: MyPartsTableBuilder,
       supplier: SupplierPartsTableBuilder,

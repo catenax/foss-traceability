@@ -36,11 +36,11 @@ import { tableAnimation } from './table-animation';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { AssetsListFacade } from 'src/app/assets/abstraction/assets-list.facade';
 import { MatPaginator } from '@angular/material/paginator';
 import { TableActions } from './table.actions';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AssetFacade } from '../../abstraction/asset-facade';
+import { TableFacade } from './table.facade';
 
 /**
  *
@@ -412,17 +412,17 @@ export class TableComponent implements OnInit, AfterViewInit, OnChanges {
   /**
    * @constructor TableComponent
    * @param {ChangeDetectorRef} changeDetector
-   * @param {AssetsListFacade} assetsFacade
+   * @param {TableComponent} tableFacade
    * @param {AssetFacade} assetFacade
    * @memberof TableComponent
    */
   constructor(
     public changeDetector: ChangeDetectorRef,
-    private assetsFacade: AssetsListFacade,
+    private tableFacade: TableFacade,
     private assetFacade: AssetFacade,
   ) {
     this.selectedAsset = undefined;
-    this.selectedRowState$ = this.assetsFacade.selectedAsset$;
+    this.selectedRowState$ = this.tableFacade.selectedAsset$;
     this.selection = new SelectionModel<unknown>(true, []);
     this.removeChildSelection = false;
   }
@@ -495,7 +495,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnChanges {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   public onRowClick(row, column: ColumnConfig): void {
     if (this.clickableRows && column.type !== 'TABLE' && row.partNumberManufacturer !== '') {
-      this.assetsFacade.setSelectedAsset(row.serialNumberCustomer);
+      this.tableFacade.setSelectedAsset(row.serialNumberCustomer);
       this.selectedAsset = row.serialNumberCustomer;
     }
   }
@@ -535,7 +535,6 @@ export class TableComponent implements OnInit, AfterViewInit, OnChanges {
     if (this.isAllSelected()) {
       this.selection.clear();
       this.selectedRows = [];
-      this.assetsFacade.setSelectedRows(this.selectedRows);
       this.tableSelection.emit(this.selection);
       return;
     }
@@ -587,7 +586,6 @@ export class TableComponent implements OnInit, AfterViewInit, OnChanges {
    */
   public setSelectionActions(): void {
     this.selectedRows = this.selection.selected;
-    this.assetsFacade.setSelectedRows(this.selectedRows);
     this.tableSelection.emit(this.selection);
   }
 
@@ -732,10 +730,10 @@ export class TableComponent implements OnInit, AfterViewInit, OnChanges {
     row.selectedColumn = data;
     this.expandedRow = row;
 
-    const selectedAsset = this.assetsFacade.selectedAssetSnapshot$;
+    const selectedAsset = this.tableFacade.selectedAssetSnapshot;
 
     if (!row.isExpanded && selectedAsset !== row.serialNumberCustomer) {
-      this.assetsFacade.setSelectedAsset(undefined);
+      this.tableFacade.setSelectedAsset(undefined);
     }
   }
 

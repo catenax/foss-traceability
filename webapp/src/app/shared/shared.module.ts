@@ -60,6 +60,8 @@ import { AssetDetailSidebarComponent } from './components/asset-detail-sidebar/a
 import { AssetDetailSidebarSkeletonComponent } from './components/asset-detail-sidebar/asset-detail-sidebar-skeleton/asset-detail-sidebar-skeleton.component';
 import { IncludePipe } from '../assets/pipes/include.pipe';
 import { AssetDatePipe } from './pipes/asset-date.pipe';
+import { TableFacade } from './components/table/table.facade';
+import { TableState } from './components/table/table.state';
 
 /**
  *
@@ -150,6 +152,8 @@ import { AssetDatePipe } from './pipes/asset-date.pipe';
     AssetService,
     MspidsResolver,
     OrganizationsResolver,
+    TableFacade,
+    TableState,
   ],
   entryComponents: [ConfirmDialogComponent],
 })

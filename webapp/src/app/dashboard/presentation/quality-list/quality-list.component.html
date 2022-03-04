@@ -14,7 +14,13 @@
   ~ limitations under the License.
   -->
 
-<section class="quality-list-section" *ngIf="this.topFiveAlerts.length; else emptyState">
+<section
+  class="quality-list-section"
+  [ngClass]="{
+    'quality-list-bottom-margin': this.topFiveAlerts && this.topFiveAlerts.length > 5
+  }"
+  *ngIf="this.topFiveAlerts.length; else emptyState"
+>
   <div class="mt-1" *ngFor="let qualityAlert of this.topFiveAlerts">
     <div class="quality-list-container" [ngClass]="this.getCardCssClass(qualityAlert)">
       <div class="quality-list-card">

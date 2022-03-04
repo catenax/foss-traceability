@@ -98,9 +98,9 @@
     'grid-cols-1': this.selectedAsset$ | async
   }"
 >
-  <ng-container *ngIf="this.selectedRows$ | async as selectedRows">
+  <ng-container *ngIf="this.selectedRows && this.selectedRows.length">
     <app-table-selection
-      [selectedRows]="selectedRows"
+      [selectedRows]="this.selectedRows"
       [totalOfAssets]="this.totalOfAssets$ | async"
       [loadingComplete]="this.loading$ | async"
       [form]="this.form"
@@ -128,12 +128,12 @@
           [dataSet]="v.data.data"
           [tableConfiguration]="this.assetTable"
           [clickedRow]="this.selectedAsset$ | async"
-          [removeSelection]="this.removeSelectedRows"
           [clickableRows]="true"
           [isChildClickable]="true"
           [stickyHeader]="true"
           [multiColorRow]="true"
           (linkEvent)="this.getDetails($event)"
+          (tableSelection)="this.getSelectedRows($event)"
         >
         </app-table>
       </div>

@@ -32,7 +32,7 @@
 
 .alerts-section {
   @apply bg-white p-4 col-span-6 relative;
-  height: 28rem;
+  min-height: 20rem;
 }
 
 .alerts-section-container {
@@ -104,7 +104,6 @@
 
 .histogram-date-input {
   border-bottom: #5b708f solid 1px;
-  position: relative;
   width: 220px;
   cursor: pointer;
   @apply font-regular text-base;
@@ -145,6 +144,30 @@
       text-overflow: ellipsis;
       @apply px-4;
     }
+  }
+}
+
+.calendar-section {
+  @apply relative;
+  width: 210px;
+
+  &__input {
+    @apply font-regular text-base cursor-pointer font-normal border-b border-primary border-solid w-full;
+
+    &:focus {
+      @apply outline-none border-b-2 border-primary border-solid;
+    }
+  }
+
+  .md-drppicker {
+    left: -425px !important;
+    top: 40px !important;
+  }
+
+  &__icon {
+    @apply pointer-events-none absolute;
+    bottom: 5%;
+    right: 0;
   }
 }
 

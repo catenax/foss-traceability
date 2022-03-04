@@ -15,7 +15,11 @@
  */
 
 .quality-list-section {
-  @apply flex flex-col mt-4;
+  @apply flex flex-col;
+}
+
+.quality-list-bottom-margin {
+  @apply mb-10;
 }
 
 .quality-list-container {
@@ -63,7 +67,7 @@
 }
 
 .quality-list-empty-state {
-  @apply flex flex-col mt-8;
+  @apply flex flex-col mt-4;
 }
 
 .border-minor {

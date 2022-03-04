@@ -26,7 +26,7 @@ import { AssetFilter } from 'src/app/assets/model/asset-filter.model';
 import { fields } from 'src/app/assets/model/assets-list.model';
 import { HistogramType, ReceivedAlertType } from '../model/dashboard.model';
 import { Moment } from 'moment';
-import * as moment from 'moment';
+import * as moment from 'moment/moment';
 import { DashTopAlerts } from '../model/top-alerts.model';
 
 /**

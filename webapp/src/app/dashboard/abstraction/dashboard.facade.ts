@@ -33,7 +33,7 @@ import { AffectedPart } from '../model/affected-parts.model';
 import { DashTopAlerts, RemainingAlerts, TopAlerts } from '../model/top-alerts.model';
 import { Investigation } from 'src/app/investigations/model/investigation.model';
 import { flatten, map } from 'lodash-es';
-import { QualityAlert } from 'src/app/quality-alert/model/quality-alert.model';
+import { QualityAlert, QualityAlertFlow } from 'src/app/quality-alert/model/quality-alert.model';
 
 /**
  *
@@ -245,7 +245,7 @@ export class DashboardFacade {
    */
   public setTopQualityAlerts(topAlerts: string): void {
     this.dashboardState.setTopQualityAlerts({ loader: true });
-    this.dashboardService.getTopAlerts(topAlerts).subscribe(
+    this.dashboardService.getTopAlerts(topAlerts, QualityAlertFlow.BOTTOM_UP).subscribe(
       (qualityAlerts: { topAlerts: TopAlerts[]; remainingAlerts: RemainingAlerts }) =>
         this.dashboardState.setTopQualityAlerts({ data: qualityAlerts }),
       error => this.dashboardState.setTopQualityAlerts({ error }),
@@ -260,7 +260,7 @@ export class DashboardFacade {
    */
   public setTopInvestigations(topAlerts: string): void {
     this.dashboardState.setTopQualityInvestigations({ loader: true });
-    this.dashboardService.getTopInvestigations(topAlerts).subscribe(
+    this.dashboardService.getTopAlerts(topAlerts, QualityAlertFlow.TOP_DOWN).subscribe(
       (investigations: { topAlerts: TopAlerts[]; remainingAlerts: RemainingAlerts }) =>
         this.dashboardState.setTopQualityInvestigations({ data: investigations }),
       error => this.dashboardState.setTopQualityInvestigations({ error }),

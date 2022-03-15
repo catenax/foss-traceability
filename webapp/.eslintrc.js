@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-export const environment = {
-  production: false,
-  keycloakUrl: 'https://auth.dev.catenax.tracefoss.com/auth/',
-  multiTenant: true,
-  defaultRealm: 'bmw',
-  baseUrl: '/',
-  realmRegExp: '^https?://[^/]+/([-a-z-A-Z-0-9]+)',
-  laapi: 'https://api.taas.dev.catenax.tracefoss.com/v1/',
-  aems: 'https://api.aems.taas.dev.catenax.tracefoss.com/v1/',
-  taasLaapi: 'https://api.taas.dev.catenax.tracefoss.com/v1/',
-  taasAems: 'https://api.aems.taas.dev.catenax.tracefoss.com/v1/',
-  mapBoxAccessToken: 'pk.eyJ1IjoiZmVsaXhnZXJiaWciLCJhIjoiY2sxNmh4d2dvMTJkdTNpcGZtcWhvaHpuNyJ9.2hJW4R6PoiqIgytqUn1kbg',
+// eslint-disable-next-line no-undef
+module.exports = {
+    root: true,
+    parser: '@typescript-eslint/parser',
+    plugins: ['@typescript-eslint'],
+    extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'prettier'],
+    rules: {
+      'no-var': 'error',
+      semi: 'error',
+      'no-multi-spaces': 'error',
+      'space-in-parens': 'error',
+      'no-multiple-empty-lines': 'error',
+      'prefer-const': 'error',
+      'no-use-before-define': 'error',
+    },
 };
